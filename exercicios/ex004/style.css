@@ -1,0 +1,6 @@
+/* A regra charset garante que códigos com caracteres amplos (como acentos) não causem problemas*/
+@charset "UTF-8";
+
+h1{
+    color: pink;
+}
