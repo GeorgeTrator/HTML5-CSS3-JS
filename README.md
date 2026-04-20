@@ -1,1 +1,2 @@
-Reservatório com exercícios (completos ou esboços) de aula
+Reservatório com exercícios e 
+conteúdo das aulas.
