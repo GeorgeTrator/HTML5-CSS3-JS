@@ -1,0 +1,55 @@
+
+:root {
+    --main-color: #2c3e50;
+    --accent-color: #3498db;
+    --text-color: #ecf0f1;
+}
+
+body {
+    background-color: var(--main-color);
+    color: var(--text-color);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.reveal {
+    background-color: var(--main-color);
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+    color: var(--accent-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+}
+
+.reveal p {
+    color: var(--text-color);
+    font-size: 1.3em;
+}
+
+/* Transições suaves */
+.reveal section {
+    transition: all 0.6s ease;
+}
+
+/* Estilos dos slides */
+.slides section {
+    padding: 60px 40px;
+    background: linear-gradient(135deg, var(--main-color) 0%, #34495e 100%);
+    border-radius: 10px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Indicador de navegação */
+.reveal .controls {
+    bottom: 30px;
+    right: 30px;
+}
+
+.reveal .progress {
+    height: 3px;
+    background: var(--accent-color);
+}

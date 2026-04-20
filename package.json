@@ -1,0 +1,21 @@
+{
+  "name": "apresentacao-web",
+  "version": "1.0.0",
+  "description": "Apresentação de Desenvolvimento Web com Reveal.js",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "reveal.js",
+    "apresentacao",
+    "html5",
+    "css3",
+    "javascript"
+  ],
+  "author": "George Henrique dos Santos",
+  "license": "UNLICENSED",
+  "dependencies": {
+    "reveal.js": "^4.5.0"
+  }
+}
