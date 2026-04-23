@@ -101,6 +101,28 @@ body {
     height: 3px;
     background: var(--accent-color);
 }
+
+#hintButton{
+    bottom: 20px;
+    left: 20px;
+    background-color: var(--accent-color);
+    color: var(--text-color);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+#hintButton:hover{
+    background-color: #2980b9;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Fim das configurações Globais */
+
+
+
+
 /* Slide 2 */
 .ImageSlide{
     margin: 0px 0px;
