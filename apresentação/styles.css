@@ -118,10 +118,13 @@ body {
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
 }
 
+.tagImgSlide:hover{
+    box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+}
+
+
 /* Fim das configurações Globais */
-
-
-
 
 /* Slide 2 */
 .ImageSlide{

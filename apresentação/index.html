@@ -24,7 +24,7 @@
             <!-- Slide 2 -->
             <section>
                 <div class="ImageSlide">
-                    <img id="IntroBoxModel" src="imagens/box-model/modelo de caixas.png" alt="Capa da apresentação modelo de caixas">
+                    <img class="tagImgSlide" id="IntroBoxModel" src="imagens/box-model/modelo de caixas.png" alt="Capa da apresentação modelo de caixas">
                 </div>
             </section>
 
@@ -33,13 +33,13 @@
                     <h1 id="h1Slide3">Tudo em HTML5 é uma caixa!</h1>
                     <div class="ImageSlide">
                         <a href="util/box-model/cartao.html" target="_blank">
-                        <img id="GeorgeCartao"src="imagens/box-model/georgeCartao.jpeg" alt="Div cartão George Santos">
+                        <img class="tagImgSlide" id="GeorgeCartao"src="imagens/box-model/georgeCartao.jpeg" alt="Div cartão George Santos">
                         </a>
                     </div>
                 </section>
                 <section>
                     <div class="ImageSlide">
-                        <img id="BoxModelGeorgeCartao" src="imagens/box-model/box-model-georgeCartao.jpeg" alt="Elementos de caixa ao redor da imagem cartão George Santos">
+                        <img class="tagImgSlide" id="BoxModelGeorgeCartao" src="imagens/box-model/box-model-georgeCartao.jpeg" alt="Elementos de caixa ao redor da imagem cartão George Santos">
                     </div>
                 </section>
 
@@ -132,15 +132,15 @@
                     <h1>Resposta</h1>
                     <p style="font-size:16px;">OBS: outra formas de resposta similares também são válidas</p>
                     <div class="ImageSlide">
-                        <img id="ex006"src="imagens/box-model/ex006.jpg" alt="Resposta de exercício">
+                        <img class="tagImgSlide" id="ex006"src="imagens/box-model/ex006.jpg" alt="Resposta de exercício">
                     </div>
                     <p style="font-size: 16px">ps: Use text-align: center para alinhar o texto</p>
                 </section>
                 <section>
                     <h1>DESAFIO <button id="hintButton" onclick="alert('Use margin:auto para centralizar automaticamente :D')">Dica</button></h1> 
-                    <p>Modifique o ex006: adicionando mais 4 tags "h" e faça um esquema de pirâmide, como ao lado! </p>
+                    <p>Modifique o ex006: adicionando mais 4 tags "h" e faça um esquema de pirâmide, como abaixo: </p>
                     <div class="SlideImage">
-                        <img src="imagens/box-model/desafio_ex006.jpeg" alt="Resposta do desafio ao exercício 006">
+                        <img class="tagImgSlide" src="imagens/box-model/desafio_ex006.jpeg" alt="Resposta do desafio ao exercício 006">
 
                     </div>
                     <p>Tente fazer a mesma coisa com tags "&lta&gt", o que acontece?</p>
@@ -149,40 +149,72 @@
 
             <!-- Slide 4: Importância Semântica das Propriedades -->
             <section>
+                <section>
                 <h1>⚡ Importância Semântica</h1>
                 <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
-                
+
                 <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
+
                     <div style="margin-bottom: 25px;">
                         <h3 style="color: #3498db;">📦 Padding</h3>
                         <p><strong>Função:</strong> Cria espaço <strong>interno</strong> ao redor do conteúdo</p>
                         <p><strong>Quando usar:</strong> Para dar "respiração" ao texto/conteúdo dentro da caixa</p>
                         <p><strong>Exemplo:</strong> Um botão com padding oferece espaço confortável para o clique</p>
                     </div>
-
+                </section>
+                
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
                     <div style="margin-bottom: 25px;">
                         <h3 style="color: #2ecc71;">🌍 Margin</h3>
                         <p><strong>Função:</strong> Cria espaço <strong>externo</strong> entre caixas</p>
                         <p><strong>Quando usar:</strong> Para separar elementos na página, controlar o layout</p>
                         <p><strong>Exemplo:</strong> Margin entre parágrafos evita que o texto fique muito junto</p>
                     </div>
+                </section>
 
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
                     <div style="margin-bottom: 25px;">
                         <h3 style="color: #f39c12;">🎨 Border</h3>
                         <p><strong>Função:</strong> Define uma borda visível ao redor da caixa</p>
                         <p><strong>Quando usar:</strong> Para destacar, separar visualmente ou criar contornos</p>
                         <p><strong>Exemplo:</strong> Um card com border cria uma "moldura" visual clara</p>
                     </div>
-
+                </section>
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
                     <div style="margin-bottom: 25px;">
-                        <h3 style="color: #e74c3c;">⭐ Outline</h3>
-                        <p><strong>Função:</strong> Cria uma linha fora da borda (não ocupa espaço no layout)</p>
-                        <p><strong>Quando usar:</strong> Para <strong>acessibilidade</strong> - indicar foco em navegação por teclado</p>
-                        <p><strong>Exemplo:</strong> Quando você pressiona TAB em um input, o outline marca qual elemento tem foco</p>
-                        <p style="color: #e74c3c; font-weight: bold; margin-top: 10px;">✨ Importante para inclusão digital!</p>
+                            <h3 style="color: #e74c3c;">⭐ Outline</h3>
+                            <p><strong>Função:</strong> Cria uma linha fora da borda (não ocupa espaço no layout)</p>
+                            <p><strong>Quando usar:</strong> Para <strong>acessibilidade</strong> - indicar foco em navegação por teclado</p>
+                            <p><strong>Exemplo:</strong> Quando você pressiona TAB em um input, o outline marca qual elemento tem foco</p>
+                            <p style="color: #e74c3c; font-weight: bold; margin-top: 10px;">✨ Importante para inclusão digital!</p>
+                        </div>
+
+                </section>
+                               <section>
+                    <h1>Resumo do Box Model</h1>
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p><strong>📦 Padding:</strong> Espaço interno ao redor do conteúdo</p>
+                        <p><strong>🌍 Margin:</strong> Espaço externo entre caixas</p>
+                        <p><strong>🎨 Border:</strong> Borda visível ao redor da caixa</p>
+                        <p><strong>⭐ Outline:</strong> Linha externa para foco/acessibilidade</p>
                     </div>
+                </section>
+            </section>
+            <!--Slide 5: Arquitetura Web HTML5-->
+            <section>
+                <div class="ImageSlide">
+                    <img class="tagImgSlide" id="tamanhoCaixa" src="imagens/box-model/tamanho_caixa.png" alt="Diagrama mostrando a diferença entre box-sizing: content-box e border-box">
+
                 </div>
             </section>
+
+
             
         </div>
     </div>
