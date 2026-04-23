@@ -115,4 +115,21 @@ body {
     transform: translateY(-4px);
 }
 
+/* Slide 3 */
+#h1Slide3 {
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    font-weight: bold;
+    font-size: 1em;
+    text-align: center;
+}
 
+#GeorgeCartao:hover{
+        box-shadow: 2px 2px 4px rgba(8, 5, 194, 0.5);
+        transform: translateX(4px);
+        outline: rgb(17, 0, 255) solid 2px;
+}
+
+#BoxModelGeorgeCartao:hover{
+    box-shadow: 5px 5px 10px 2px rgba(0, 0, 0, 0.5);
+    transform: translateY(-4px);
+}
