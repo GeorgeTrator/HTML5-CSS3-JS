@@ -213,6 +213,102 @@
 
                 </div>
             </section>
+            <!-- Slide 6: Inline vs Block-->
+             <section> 
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/box-model/inline_vs_block.png" alt="Diferença entre elementos inline e block">
+                    </div>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">Display: Tipo de Exibição</h1>
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p style="margin-bottom: 20px;"><strong style="color: #e74c3c;">Display: block</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 25px;">
+                            <li>Ocupa toda a largura disponível</li>
+                            <li>Começa em uma nova linha</li>
+                            <li>Respeita padding, margin e border</li>
+                            <li><strong>Exemplos:</strong> &lt;div&gt;, &lt;p&gt;, &lt;h1&gt;, &lt;section&gt;</li>
+                        </ul>
+
+                        <p style="margin-bottom: 20px;"><strong style="color: #3498db;">Display: inline</strong></p>
+                        <ul style="margin-left: 20px;">
+                            <li>Ocupa apenas o espaço necessário</li>
+                            <li>Fica na mesma linha que outros elementos</li>
+                            <li>NÃO respeita margin/padding vertical</li>
+                            <li><strong>Exemplos:</strong> &lt;span&gt;, &lt;a&gt;, &lt;strong&gt;, &lt;em&gt;</li>
+                        </ul>
+                    </div>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">🎯 Display: inline-block</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 30px;">O melhor dos dois mundos!</h2>
+                    
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p style="margin-bottom: 20px;"><strong style="color: #2ecc71;">Combina:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 25px;">
+                            <li>✅ Fica na mesma linha (como inline)</li>
+                            <li>✅ Respeita padding, margin e border (como block)</li>
+                            <li>✅ Respeita width e height (como block)</li>
+                        </ul>
+
+                        <p style="margin-top: 30px; margin-bottom: 15px;"><strong style="color: #3498db;">Código:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            display: inline-block;
+                        </p>
+
+                        <p style="margin-top: 20px;"><strong style="color: #f39c12;">Caso de uso:</strong> Criar botões lado a lado, cards em linha, menus horizontais</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">Exemplo Prático</h1>
+                    <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
+                        <p style="margin-bottom: 15px;"><strong style="color: #3498db;">HTML:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px; margin-bottom: 20px;">
+                            &lt;button&gt;Botão 1&lt;/button&gt;<br>
+                            &lt;button&gt;Botão 2&lt;/button&gt;<br>
+                            &lt;button&gt;Botão 3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #3498db;">CSS:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            button {<br>
+                            &nbsp;&nbsp;display: inline-block;<br>
+                            &nbsp;&nbsp;padding: 10px 20px;<br>
+                            &nbsp;&nbsp;margin: 5px;<br>
+                            &nbsp;&nbsp;background: #3498db;<br>
+                            &nbsp;&nbsp;color: white;<br>
+                            }<br>
+                        </p>
+
+                        <p style="margin-top: 20px;"><strong style="color: #2ecc71;">Resultado:</strong> Os botões ficam lado a lado com espaçamento!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">⚠️ Cuidado com Whitespace!</h1>
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p style="margin-bottom: 20px;">Com <strong>inline-block</strong>, espaços em branco no HTML criam pequenos gaps:</p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #e74c3c;">❌ ERRADO (cria gaps):</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px; margin-bottom: 20px;">
+                            &lt;button&gt;1&lt;/button&gt;<br>
+                            &lt;button&gt;2&lt;/button&gt;<br>
+                            &lt;button&gt;3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #2ecc71;">✅ CORRETO (sem gaps):</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            &lt;button&gt;1&lt;/button&gt;&lt;button&gt;2&lt;/button&gt;&lt;button&gt;3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-top: 20px; color: #f39c12;"><strong>Dica:</strong> Use Flexbox ou Grid para evitar esse problema! (veremos depois)</p>
+                    </div>
+                </section>
+             </section>
 
 
             
