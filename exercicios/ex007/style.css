@@ -1,0 +1,35 @@
+#secao {
+    width: 500px;
+    height: 300px;
+}
+
+#caixa {
+    width: 100%; /* Não é obrigatório escrever isto, pois por padrão já é 100% */
+    padding: 30px;
+    border: 10px;
+
+    /* Descomente esta parte para ver a correção
+    box-sizing: border-box;
+
+        O que aconteceu ? 
+    R: Por padrão, as tags tem tamanho "content-box", isto é, a altura (height) e comprimento (width) são relativas somente ao conteúdo da caixa, ignorando o preenchimento (padding), borda (border) e margem (margin).
+    "setar" box-sizing para "border-box" ordena que o tamanho total seja exatamente a soma desses caras.
+    Mas cuidado! O padrão do HTML é enganoso!
+    Se você der mais padding do que deu de comprimento, por exemplo, 
+    o comprimento vai ACHATAR (shrink) até 0 e, não havendo mais espaço,
+    o padding terá ainda assim o valor definindo, ocorrendo um novo OVERFLOW.
+
+    Lembre-se que você pode inspecionar os elementos da página clicando
+    com o botão direito do mouse e depois em inspecionar. Vá em "Computed/Calculnado" na janela que se abre para ver o tamanho da caixa.
+    */
+}
+
+
+/* WIDTH: 100% ... MAS 100% DE QUEM?
+O HTML é uma Árvore - um dos conceitos mais fundamentais de Ciência da Computação.
+Nesta lógica de árvore, uma determinada tag "filho" herda as propriedades
+que seu pai possuem, exceto se houver alguma regra que sobreescreva.
+Por exemplo, é possível criar regras absolutas em CSS que sobreescrevam qualquer outra.
+Uma regra que permite sobreescrever outra é a lógica de herança: 
+o filho primeiro herda do pai. Se o pai não tiver a propriedade, herda do avô e assim sucessivamente, mas jamais herdará de um tio (tag no mesmo nível da hierarquia) ou de um filho (tag de nível abaixo).
+Outra forma de sobreescrever regras é dando propriedades especificamente àquela tag, via id no CSS interno/Externo ou, como fazíamos, usando CSS INLINE.
