@@ -1,0 +1,35 @@
+@charset "UTF-8";
+*{margin: auto} /* Forma compacta de centralizar todas as tags do site por padrão. 
+OBS: Se uma tag tiver um pai mais próximo que a raiz (HTML, representado pelo wildcard '*'), com outras definições de margem, ou ela própria, então esta definição é sobreescrita. */
+
+body{
+    padding-top: 300px; /*Margem na body para "empurrar" as demais caixas para baixo
+    OBS: Esta é uma solução **ingênua**
+    */
+}
+
+h1{
+    width: 500px;
+    background-color: blue;
+    border: 5px;
+}
+h2{
+    width: 400px; 
+    background-color: red;
+    border: 5px;
+}
+h3 {
+    width: 300px;
+    background-color: yellow;
+    border: 5px;
+}
+h4{
+    width: 200px;
+    background-color: aqua;
+    border: 5px;
+}
+h5{
+    width: 100px;
+    background-color: brown;
+    border: 5px;
+}
