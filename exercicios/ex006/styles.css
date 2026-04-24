@@ -1,0 +1,42 @@
+    @charset "UTF-8";
+    /* SHORTHANDS:
+    Se você quiser o mesmo tamanho para top, right, bottom e left, basta escrever 
+    padding: 10px (todos terão 10px)
+    Se quiser que top e bottom tenham o mesmo valor e 
+    right e left outro, pode fazer
+    padding: 10px 15px; (top-bottom== 10px e left-right== 15px) 
+
+    Essa mesma lógica se aplica a margin
+    
+
+    TOP = TOPO
+    LEFT = ESQUERDA
+    RIGHT = DIREITA
+    BOTTOM = BAIXO
+    
+    */
+h1{
+    /* PADDING == PREENCHIMENTO*/
+    padding-top: 10px;
+    padding-right: 15px;
+    padding-bottom: 9px;
+    padding-left: 25px;
+
+    /*MARGIN == MARGEM*/
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+
+    /*BORDER == BORDA*/
+    border-bottom: 5px; /* Borda com tipo e cor padrão (solid e black) */
+    border-left: 10px solid red; /* Borda com tipo sólido cor vermelha  */
+    border-right: 18px dashed blue; /* Borda com dashed (tracejada) e cor azul */
+    border-bottom: 1px dotted blue; /* Borda com tipo dotted (pontilhada) e cor azul (solid e black) */
+    
+    /* Lembre-se: o outline é raramente usado, mas é o padrão para focalizar na tela o objeto para quem navega usando teclado. É bom não o modificar, mas estamos fazendo alguns testes com seu comprimento (width), distanciamento à margem (offset) e cor */
+    outline-width: 10px;
+    outline-offset: 3px;
+    outline-color: yellow;
+
+}
