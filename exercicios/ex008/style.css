@@ -1,0 +1,15 @@
+ a{
+    /* Comprimento e altura não são respeitados por tags com display: inline, que é o padrão de tags como a tag <a> e <span> */
+
+    height: 50px;
+    width: 150px;
+
+    background-color: rgb(83, 83, 194);
+    display: inline-block; /* Troque por block e inline para ver o que acontece! */
+    text-align: center; /* Alinha o texto dentro da caixa*/
+    color: white; /* Define a cor do texto */
+}
+
+/* Tags padrão "block", como "div", jogam as demais tags para baixo delas (se houver alguma à direita) e ocupam, por padrão, todo o espaço de comprimento disponível, mas são ajustáveis via height e width.
+Tags inline não empurram as demais, mas não podem ser controladas por height e width.
+Inline-block resolve os dois problemas: permite tags lado a lado com contorle de height e width
