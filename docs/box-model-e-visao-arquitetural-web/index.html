@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação de Desenvolvimento Web</title>
+    
+    <!-- Reveal.js CSS (via CDN) -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/black.css">
+    
+    <!-- Estilos customizados -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            <!-- Slide 1 - Início -->
+            <section>
+                <h1>Desenvolvimento Web com HTML5, CSS3 e JavaScript</h1>
+                <p>Use as setas do teclado para navegar</p>
+                
+                <div style="margin-top: 50px;">
+                    <p style="font-size: 18px; color: #3498db;">🚀 Prepare seu ambiente de aula:</p>
+                    <a href=".vscode.zip" download style="
+                        background-color: #007acc; 
+                        color: white; 
+                        padding: 15px 25px; 
+                        text-decoration: none; 
+                        border-radius: 5px; 
+                        font-weight: bold; 
+                        display: inline-block;
+                        font-size: 16px;
+                        border: 1px solid #005a9e;">
+                        📥 Baixar Configurações VS Code (.zip)
+                    </a>
+                    <p style="font-size: 14px; margin-top: 10px; color: #888;">
+                        (Extraia a pasta <strong>.vscode</strong> dentro da pasta do seu exercício)
+                    </p>
+                </div>
+            </section>
+            <!-- Slide 2 -->
+            <section>
+                <div class="ImageSlide">
+                    <img class="tagImgSlide" id="IntroBoxModel" src="imagens/box-model/modelo de caixas.png" alt="Capa da apresentação modelo de caixas">
+                </div>
+            </section>
+
+            <section>
+                <section>
+                    <h1 id="h1Slide3">Tudo em HTML5 é uma caixa!</h1>
+                    <div class="ImageSlide">
+                        <a href="util/box-model/cartao.html" target="_blank">
+                        <img class="tagImgSlide" id="GeorgeCartao"src="imagens/box-model/georgeCartao.jpeg" alt="Div cartão George Santos">
+                        </a>
+                    </div>
+                </section>
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" id="BoxModelGeorgeCartao" src="imagens/box-model/box-model-georgeCartao.jpeg" alt="Elementos de caixa ao redor da imagem cartão George Santos">
+                    </div>
+                </section>
+
+                <!-- Slide Vertical: Padding -->
+                <section>
+                    <h2>📦 Padding - Espaço Interno</h2>
+                    <div style="text-align: left; font-size: 0.9em;">
+                        <p><strong>padding-top:</strong> Espaço acima do conteúdo</p>
+                        <p><strong>padding-right:</strong> Espaço à direita</p>
+                        <p><strong>padding-bottom:</strong> Espaço abaixo</p>
+                        <p><strong>padding-left:</strong> Espaço à esquerda</p>
+                        <p style="margin-top: 20px; color: #3498db;"><strong>Exemplo:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            padding-top: 20px;<br>
+                            padding-right: 30px;<br>
+                            padding-bottom: 20px;<br>
+                            padding-left: 30px;
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Slide Vertical: Margin -->
+                <section>
+                    <h2>🌍 Margin - Espaço Externo</h2>
+                    <div style="text-align: left; font-size: 0.9em;">
+                        <p><strong>margin-top:</strong> Espaço acima da caixa</p>
+                        <p><strong>margin-right:</strong> Espaço à direita</p>
+                        <p><strong>margin-bottom:</strong> Espaço abaixo</p>
+                        <p><strong>margin-left:</strong> Espaço à esquerda</p>
+                        <p style="margin-top: 20px; color: #3498db;"><strong>Exemplo:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            margin-top: 30px;<br>
+                            margin-right: 0px;<br>
+                            margin-bottom: 30px;<br>
+                            margin-left: 0px;
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Slide Vertical: Border -->
+                <section>
+                    <h2>🎨 Border - Borda da Caixa</h2>
+                    <div style="text-align: left; font-size: 0.9em;">
+                        <p><strong>border-top:</strong> Borda acima</p>
+                        <p><strong>border-right:</strong> Borda à direita</p>
+                        <p><strong>border-bottom:</strong> Borda abaixo</p>
+                        <p><strong>border-left:</strong> Borda à esquerda</p>
+                        <p style="margin-top: 20px; color: #3498db;"><strong>Exemplo (largura | estilo | cor):</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            border-top: 4px solid #3498db;<br>
+                            border-right: 4px solid #3498db;<br>
+                            border-bottom: 4px solid #3498db;<br>
+                            border-left: 4px solid #3498db;
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Slide Vertical: Outline -->
+                <section>
+                    <h2>⭐ Outline - Linha Externa</h2>
+                    <div style="text-align: left; font-size: 0.9em;">
+                        <p><strong>outline-width:</strong> Espessura da linha</p>
+                        <p><strong>outline-style:</strong> Estilo (solid, dashed, dotted, etc)</p>
+                        <p><strong>outline-color:</strong> Cor da linha</p>
+                        <p><strong>outline-offset:</strong> Distância da borda</p>
+                        <p style="margin-top: 20px; color: #3498db;"><strong>Exemplo:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            outline-width: 2px;<br>
+                            outline-style: dashed;<br>
+                            outline-color: #e74c3c;<br>
+                            outline-offset: 5px;
+                        </p>
+                    </div>
+                </section>
+
+                <!-- Exercício 006 -->
+                <section>
+                    <h1>Só se aprende na prática!</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 30px;">📝 Exercício 006</h2>
+                    <p style="margin-top: 20px;">Crie um h1 com TODAS as propriedades:</p>
+                    <ul style="font-size: 0.9em; margin-top: 20px;">
+                        <li>✏️ padding-top, right, bottom, left</li>
+                        <li>✏️ margin-top, right, bottom, left</li>
+                        <li>✏️ border-top, right, bottom, left</li>
+                        <li>✏️ outline-width, style, color, offset</li>
+                    </ul>
+                    <p style="margin-top: 30px; color: #3ce753; font-weight: bold; font-size:18px;">SHORTHANDS: forma compacta para definir todas as propriedades!</p>
+                </section>
+                <section>
+                    <h1>Resposta</h1>
+                    <p style="font-size:16px;">OBS: outra formas de resposta similares também são válidas</p>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" id="ex006"src="imagens/box-model/ex006.jpg" alt="Resposta de exercício">
+                    </div>
+                    <p style="font-size: 16px">ps: Use text-align: center para alinhar o texto</p>
+                </section>
+                <section>
+                    <h1>DESAFIO <button id="hintButton" onclick="alert('Use margin:auto para centralizar automaticamente :D')">Dica</button></h1> 
+                    <p>Modifique o ex006: adicionando mais 4 tags "h" e faça um esquema de pirâmide, como abaixo: </p>
+                    <div class="SlideImage">
+                        <img class="tagImgSlide" src="imagens/box-model/desafio_ex006.jpeg" alt="Resposta do desafio ao exercício 006">
+
+                    </div>
+                    <p>Tente fazer a mesma coisa com tags "&lta&gt", o que acontece?</p>
+                </section>
+            </section>
+
+            <!-- Slide 4: Importância Semântica das Propriedades -->
+            <section>
+                <section>
+                <h1>⚡ Importância Semântica</h1>
+                <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
+
+                <div style="text-align: left; font-size: 0.85em; margin-top: 30px;">
+
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="color: #3498db;">📦 Padding</h3>
+                        <p><strong>Função:</strong> Cria espaço <strong>interno</strong> ao redor do conteúdo</p>
+                        <p><strong>Quando usar:</strong> Para dar "respiração" ao texto/conteúdo dentro da caixa</p>
+                        <p><strong>Exemplo:</strong> Um botão com padding oferece espaço confortável para o clique</p>
+                    </div>
+                </section>
+                
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="color: #2ecc71;">🌍 Margin</h3>
+                        <p><strong>Função:</strong> Cria espaço <strong>externo</strong> entre caixas</p>
+                        <p><strong>Quando usar:</strong> Para separar elementos na página, controlar o layout</p>
+                        <p><strong>Exemplo:</strong> Margin entre parágrafos evita que o texto fique muito junto</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
+                    <div style="margin-bottom: 25px;">
+                        <h3 style="color: #f39c12;">🎨 Border</h3>
+                        <p><strong>Função:</strong> Define uma borda visível ao redor da caixa</p>
+                        <p><strong>Quando usar:</strong> Para destacar, separar visualmente ou criar contornos</p>
+                        <p><strong>Exemplo:</strong> Um card com border cria uma "moldura" visual clara</p>
+                    </div>
+                </section>
+                <section>
+                    <h1>⚡ Importância Semântica</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 40px;">Para que serve cada propriedade?</h2>
+                    <div style="margin-bottom: 25px;">
+                            <h3 style="color: #e74c3c;">⭐ Outline</h3>
+                            <p><strong>Função:</strong> Cria uma linha fora da borda (não ocupa espaço no layout)</p>
+                            <p><strong>Quando usar:</strong> Para <strong>acessibilidade</strong> - indicar foco em navegação por teclado</p>
+                            <p><strong>Exemplo:</strong> Quando você pressiona TAB em um input, o outline marca qual elemento tem foco</p>
+                            <p style="color: #e74c3c; font-weight: bold; margin-top: 10px;">✨ Importante para inclusão digital!</p>
+                        </div>
+
+                </section>
+                               <section>
+                    <h1>Resumo do Box Model</h1>
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p><strong>📦 Padding:</strong> Espaço interno ao redor do conteúdo</p>
+                        <p><strong>🌍 Margin:</strong> Espaço externo entre caixas</p>
+                        <p><strong>🎨 Border:</strong> Borda visível ao redor da caixa</p>
+                        <p><strong>⭐ Outline:</strong> Linha externa para foco/acessibilidade</p>
+                    </div>
+                </section>
+            </section>
+            <!--Slide 5: Arquitetura Web HTML5-->
+            <section>
+            <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" id="tamanhoCaixa" src="imagens/box-model/tamanho_caixa.png" alt="Diagrama mostrando a diferença entre box-sizing: content-box e border-box">
+
+                    </div>
+                </section>
+                <!-- EXERCÍCIO 007-->
+                <section>
+                    <h1 style="font-size: 36px;">Na prática!</h1>
+                    <h2 style="font-size: 1.2em; margin-top: 10px;">📝 Exercício 007: O Mistério do Transbordamento</h2>
+                    
+                    <div style="display: flex; align-items: start; gap: 20px; margin-top: 20px; text-align: left;">
+                        
+                        <div style="flex: 1;">
+                            <p style="font-size: 16px;">1. Crie um arquivo HTML e defina uma <strong>div</strong> com o id <code>secao</code> (ela será o nosso container pai).</p>
+                            <p style="font-size: 16px;">2. Dentro dela, crie outra <strong>div</strong> com o id <code>caixa</code> e coloque um texto dentro dela.</p>
+                            <p style="font-size: 16px;">3. No CSS, dê 100% de largura para a <code>#caixa</code> e depois adicione 30px de padding e 10px de borda.</p>
+                            <p style="font-size: 16px;">4. <strong>O Desafio:</strong> Use o <code>box-sizing: border-box;</code> para impedir que a caixa azul escape do limite cinza do pai!</p>
+                        </div>
+
+                        <div style="flex: 1.2; background: #2c3e50; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 13px; color: #ecf0f1; border: 1px solid #34495e;">
+                            <pre style="margin: 0; white-space: pre-wrap;"><code>&lt;!-- Se liga nesses novos conceitos:
+(1) "id" é como o "CPF" de uma tag. Cada tag pode ter UM e SOMENTE UM id.
+    O id permite que você aplique estilos próprios à tag e somente àquela tag!
+(2) "div" é uma tag NÃO SEMÂNTICA. Ela é usada para criar blocos e 
+    ajudar na estilização do layout.
+--&gt;
+
+&lt;div id="secao"&gt;
+    &lt;div id="caixa"&gt;Sou uma caixa de texto!&lt;/div&gt;
+&lt;/div&gt;</code></pre>
+                        </div>
+                    </div>
+
+                    <button id="hintButton" style="margin-top: 30px;" onclick="alert('Sugestão de resposta CSS:\n\n#secao {\n  width: 500px;\n  height: 200px;\n  background-color: lightgrey;\n  border: 2px solid black;\n}\n\n#caixa {\n  width: 100%;\n  height: 100px;\n  background-color: #3498db;\n  color: white;\n\n  /* Adicione isto para ver o erro: */\n  padding: 30px;\n  border: 10px solid navy;\n\n  /* E isto para consertar: */\n  box-sizing: border-box;\n}')">
+                        Dica de Resposta (CSS)
+                    </button>
+                </section>
+                <section>
+                    <h1 style="font-size: 36px;">Antes de aplicar box-sizing: border-box</h1>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/box-model/box_transbordando.jpeg" alt="Exercício parte1: a caixa transborda sem a propriedade box-sizing: border-box">
+                    </div>
+                </section>
+                <section>
+                    <h1 style="font-size: 36px;">
+                        Após aplicar box-sizing: border-box;
+                    </h1>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/box-model/box_sem_transbordar.jpeg" alt="Aplicação de box-sizing: border-box faz a div parar de transbordar, diminuindo o content para preservar width">
+                    </div>
+                </section>
+            </section>
+            <!-- Slide 6: Inline vs Block-->
+             <section> 
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/box-model/inline_vs_block.png" alt="Diferença entre elementos inline e block">
+                    </div>
+                </section>
+                <section>
+                    <h1 style="font-size: 36px;">🎯 Display: inline-block</h1>
+                    <h2 style="font-size: 1.3em; margin-top: 30px;">O melhor dos dois mundos!</h2>
+                    
+                    <div style="text-align: left; font-size: 0.9em; margin-top: 30px;">
+                        <p style="margin-bottom: 20px;"><strong style="color: #2ecc71;">Combina:</strong></p>
+                        <ul style="margin-left: 20px; margin-bottom: 25px;">
+                            <li style="font-size: 16px;">✅ Fica na mesma linha (como inline)</li>
+                            <li style="font-size: 16px;">✅ Respeita padding, margin e border (como block)</li>
+                            <li style="font-size: 16px;">✅ Respeita width e height (como block)</li>
+                        </ul>
+
+                        <p style=" font-size: 24px; margin-top: 30px; margin-bottom: 15px;"><strong style="color: #3498db;">Código:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            display: inline-block;
+                        </p>
+
+                        <p style="margin-top: 20px; font-size: 16px;"><strong style="color: #f39c12;">Caso de uso:</strong> Criar botões lado a lado, cards em linha, menus horizontais</p>
+                    </div>
+                </section>
+                <!--EXERCÍCIO 008-->
+                <section>
+                    <h1 style="font-size: 36px;">Na prática: Display</h1>
+                    <h2 style="font-size: 1.2em; margin-top: 10px;">📝 Exercício 008: O Menu de Botões</h2>
+
+                    <div style="display: flex; align-items: start; gap: 20px; margin-top: 20px; text-align: left;">
+                        
+                        <div style="flex: 1;">
+                            <p style="font-size: 16px;">1. Crie uma <strong>div</strong> com o id <code>menu</code>.</p>
+                            <p style="font-size: 16px;">2. Dentro dela, coloque três tags de link <code>&lt;a&gt;</code> (elas são <strong>inline</strong> por padrão).</p>
+                            <p style="font-size: 16px;">3. No CSS, tente dar <code>width: 150px</code> e <code>height: 50px</code> para os links. O que acontece?</p>
+                            <p style="font-size: 16px;">4. Agora, mude o display para <code>block</code> e depois para <code>inline-block</code>. Qual deles resolve o menu?</p>
+                        </div>
+
+                        <div style="flex: 1; background: #2c3e50; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; color: #ecf0f1; border: 1px solid #34495e;">
+                            <pre style="margin: 0; white-space: pre-wrap;"><code>&lt;!-- Estrutura do Menu --&gt;
+&lt;div id="menu"&gt;
+    &lt;a href="#"&gt;Home&lt;/a&gt;
+    &lt;a href="#"&gt;Produtos&lt;/a&gt;
+    &lt;a href="#"&gt;Contato&lt;/a&gt;
+&lt;/div&gt;</code></pre>
+                            <p style="font-size: 12px; color: #bdc3c7; margin-top: 10px;">Obs: Tags &lt;a&gt; são "inline" e ignoram largura/altura até você mudar o display! Hey! Você sabia que href="#" é uma maneira rápida de referenciar a própria página? </p>
+                        </div>
+                    </div>
+
+                    <button id="hintButton" style="margin-top: 30px;" onclick="alert('Dica de CSS para os links:\n\n#menu a {\n  background-color: #3498db;\n  color: white;\n  text-decoration: none;\n  width: 150px;  /* Só funciona se mudar o display! */\n  height: 50px; /* Só funciona se mudar o display! */\n\n  /* Tente um por um: */\n  display: inline;       /* Ignora tamanho */\n  display: block;        /* Empilha um em cima do outro */\n  display: inline-block; /* O melhor dos dois mundos! */\n}')">
+                        Dica de Resposta (CSS)
+                    </button>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">Exemplo Prático</h1>
+                    <div style="text-align: left; font-size: 16px; margin-top: 30px;">
+                        <p style="margin-bottom: 15px;"><strong style="color: #3498db;">HTML:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px; margin-bottom: 20px;">
+                            &lt;button&gt;Botão 1&lt;/button&gt;<br>
+                            &lt;button&gt;Botão 2&lt;/button&gt;<br>
+                            &lt;button&gt;Botão 3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #3498db;">CSS:</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            button {<br>
+                            &nbsp;&nbsp;display: inline-block;<br>
+                            &nbsp;&nbsp;padding: 10px 20px;<br>
+                            &nbsp;&nbsp;margin: 5px;<br>
+                            &nbsp;&nbsp;background: #3498db;<br>
+                            &nbsp;&nbsp;color: white;<br>
+                            }<br>
+                        </p>
+
+                        <p style="margin-top: 20px;"><strong style="color: #2ecc71;">Resultado:</strong> Os botões ficam lado a lado com espaçamento!</p>
+                    </div>
+                </section>
+
+                <section>
+                    <h1 style="font-size: 2em;">⚠️ Cuidado com Whitespace!</h1>
+                    <div style="text-align: left; font-size: 16px; margin-top: 30px;">
+                        <p style="margin-bottom: 20px;">Com <strong>inline-block</strong>, espaços em branco no HTML criam pequenos gaps:</p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #e74c3c;">❌ ERRADO (cria gaps):</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px; margin-bottom: 20px;">
+                            &lt;button&gt;1&lt;/button&gt;<br>
+                            &lt;button&gt;2&lt;/button&gt;<br>
+                            &lt;button&gt;3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-bottom: 15px;"><strong style="color: #2ecc71;">✅ CORRETO (sem gaps):</strong></p>
+                        <p style="font-family: monospace; background: #2c3e50; padding: 10px;">
+                            &lt;button&gt;1&lt;/button&gt;&lt;button&gt;2&lt;/button&gt;&lt;button&gt;3&lt;/button&gt;
+                        </p>
+
+                        <p style="margin-top: 20px; color: #f39c12;"><strong>Dica:</strong> Usamos Flexbox ou Grid para evitar esse problema! (veremos depois)</p>
+                    </div>
+                </section>
+             </section>
+             <section>
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide"src="imagens/arquitetura_html_semantica/div_span_vs_html5.png" alt="Comparação de tags arquiteturas HTML4 x HTML5">
+                    </div>
+                </section>
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide"src="imagens/arquitetura_html_semantica/html5_tags_semanticas.png" alt="Explicação sobre as tags arquiteturas do HTML5">
+
+                    </div>
+                </section>
+                <section>
+                    <p style="font-size: 16px;">
+                        Hey! Lembre-se que você pode usar a extensão Colorzilla para usar as mesmas cores do exemplo quando for criar sua solução!
+                    </p>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/arquitetura_html_semantica/ex010.png" alt="Exercício 10: monte um site simples aplicando as tags arquiteturas do HTML5">
+                    </div>
+                </section>
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/arquitetura_html_semantica/box_shadow.png" alt="Explicação da propriedade CSS box-shadow">
+                    </div>
+                </section>
+                <section>
+                    <div class="ImageSlide">
+                        <img class="tagImgSlide" src="imagens/arquitetura_html_semantica/box_shadow_formas_de_aplicar.png" alt="Formas de aplicar a propriedade CSS box-shadow">
+                    </div>
+                </section>
+             </section>
+             <section>
+                <div class="ImageSlide">
+                    <img class="tagImgSlide" src="imagens/arquitetura_html_semantica/resumo_completo.png" alt="">
+                </div>
+            </section>
+
+
+            
+        </div>
+    </div>
+
+    <!-- Reveal.js script (via CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
