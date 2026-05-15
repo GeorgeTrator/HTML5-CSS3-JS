@@ -1,0 +1,105 @@
+@charset "UTF-8"; /* É uma regra para
+que o CSS aceite caracteres de Língua Portuguesa */
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech&display=swap');
+
+
+
+/* Pseudo classe pai de todos os elementos*/
+:root{
+    --cor_fundo_principal: #ADEEC5;
+    --cor_header:  #0E331B;
+    --cor_nav: #285438;
+    --cor_footer: #0E331B;
+    --cor_highlight: #EDB0AD;
+
+
+    --main_Font: 'Share Tech', 'cursive';
+    --header_text_color: white;
+    --size_main_font: 48px;
+    /*--main_Font: 'Times New Roman', 'cursive';*/
+
+    --text_secondary: 'Times New Roman', 'Arial', 'cursive';
+
+    --text_on_hover: #987270;
+
+    --main_color: rgb(255, 255, 255);
+
+}
+
+* {
+    margin: 0px;
+    padding: 0px;
+}
+
+body {
+    background-color: var(--cor_fundo_principal);
+}
+
+header {
+    text-align: center;
+    background-color: var(--cor_header);
+
+    color: var(--header_text_color);
+
+    padding: 10px;
+}
+
+header h1{
+    font-family: var(--main_Font);
+    font-size: var(--size_main_font);
+
+}
+
+header p{
+    font-family: var(--text_secondary);
+
+}
+
+nav {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--cor_nav);
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    margin-left: 15px;
+
+    display: inline-block;
+
+    transition: all 0.5s ease;
+}
+
+nav a:hover{
+    color: var(--text_on_hover);
+    transform: scale(1.4);
+}
+
+main {
+    margin: auto;
+    width: 80%;
+    background-color: var(--main_color);
+    padding: 50px;
+}
+
+main article h1{
+    margin-bottom: 10px;
+    text-align: center;
+    font-family: var(--main_Font);
+    font-size: var(--size_main_font);
+}
+
+
+main article h2 {
+    text-align: center;
+    background-color: rgb(143, 140, 140);
+    padding: 5px;
+
+    border-radius: 25px;
+
+    margin-bottom: 10px;
+}
+
+
+
