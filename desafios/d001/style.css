@@ -29,6 +29,8 @@ que o CSS aceite caracteres de Língua Portuguesa */
 * {
     margin: 0px;
     padding: 0px;
+    box-sizing: border-box; 
+    /* Por padrão é content-box, border-box faz com que a caixa seja tamanho = padding + borda + conteúdo */
 }
 
 body {
@@ -36,23 +38,33 @@ body {
 }
 
 header {
+    /* Centraliza o texto (se possível) dentro de uma caixa */
     text-align: center;
+
+    /* background-color define a cor de fundo da caixa */
     background-color: var(--cor_header);
 
+    /* color: dá a cor do texto */
     color: var(--header_text_color);
 
+    /* O preenchimento cria uma folga interna na caixa. O efeito muda a depender do box-sizing */
     padding: 10px;
 }
 
+/*
+Como ler a expressão header h1 {} ? 
+R: header h1 = "Para todo h1 cujo 'pai' for um header, aplique as configurações abaixo 
+Cuidado: é diferente de "header, h1" que significa "Para todo header e todo h1, aplique:"
+*/
 header h1{
+    /* Define o tipo de fonte do texto */
     font-family: var(--main_Font);
+    /*Define o tamanho da fonte do texto */
     font-size: var(--size_main_font);
-
 }
 
 header p{
     font-family: var(--text_secondary);
-
 }
 
 nav {
@@ -62,44 +74,184 @@ nav {
 }
 
 nav a {
+    /* Retira a decoração dos links (o underline padrão) */
     text-decoration: none;
+
     color: white;
+
+    /* Cria uma margem (distância) à esquerda das outras caixas, exceto da caixa 'pai' */
     margin-left: 15px;
 
+    /* 
+    display: inline-block; 
+    Define que a caixa "a" dentro de "nav" terá display inline-block, ou seja, carrega propriedades 'block',
+    mas tem configuração espacial 'inline'. 
+    O padrão da tag 'a' é inline, que significa que ela não tem dimensões de padding ou border e não quebra
+    o fluxo da página (pode ter várias tags 'a' ao lado, em oposição ao display "block" que coloca uma página
+    "por linha) 
+    */
     display: inline-block;
 
+    /* Define que todo tipo de transição (como transformações geométricas) para a tag 'a' dentro de um 'nav'
+    levará 0.5s e será suavizada (ease) */
     transition: all 0.5s ease;
 }
 
+/* 
+A pseudoclasse 'hover' determina efeitos que ocorrem SOMENTE quando o mouse está sobre a tag em questão
+*/
 nav a:hover{
     color: var(--text_on_hover);
+    /* 
+    transform: scale(1.4);
+    Aplica uma transformação linear de escala que aumenta em 1.4 (ou 40%) a tag;
+    Uma transformação de escala pode aumentar ou diminuir o tamanho de uma tag.
+    OBS: "transformação linear" é um conceito com definição exata em Matemática - Algebra Linear.
+    */
     transform: scale(1.4);
 }
 
 main {
+    /* 
+    margin: auto; centraliza o conteúdo automaticamente, para qualquer viewport (janela do dispositivo)
+    */
     margin: auto;
-    width: 80%;
+
+    /* 
+    Uma forma simples de criar algum nível de responsividade.
+    Define que o tamanho máximo da caixa será de 800px e o mínimo de 320px.
+    As razões, na ordem, são: uma janela de mais de 800px com texto fica muito difícil de ser lida
+    em telas muito grandes (telas de televisão, por exemplo). Por outro lado, se a tabela pudesse diminuir
+    indefinidamente, em algum momento nada seria visível. 320px é o valor das menores telas de celular para
+    width (comprimento). 
+    OBS: Idealmente uma linha deve ter em torno de, no máximo, 80 palavras.
+    */
+    max-width: 800px;
+    min-width: 320px;
+    
     background-color: var(--main_color);
     padding: 50px;
 }
 
+main p {
+    /* 
+    Cria um espaçamento entre as linhas de texto.
+    A WCAG (organização que define regras para HTML5 e CSS3) sugere 1.4 a 1.5 o tamanho do font-size
+    para famílias de fonte (font-family) como Arial e Helvetica.
+    */
+    line-height: 1.4;
+}
+
 main article h1{
+    /* 
+    margin-bottom: cria uma margem (distância) entre as caixas abaixo dela, exceto a caixa 'pai' 
+    */
     margin-bottom: 10px;
     text-align: center;
     font-family: var(--main_Font);
     font-size: var(--size_main_font);
 }
 
-
 main article h2 {
     text-align: center;
     background-color: rgb(143, 140, 140);
     padding: 5px;
 
+    /* 
+    border-radius: permite quebrar o padrão de 'caixas retangulares' e gerar diferentes tipos
+    de arredondamentos nas bordas.
+    */
     border-radius: 25px;
 
     margin-bottom: 10px;
 }
 
+img {
+    /* 
+    Por padrão as imagens ocupam na tela o tamanho que elas tem de fato.
+    width: 100% obriga que elas assumam, no máximo, o tamanho da tag que as contém.
+    */
+    width: 100%;
+}
 
+ aside {
+    /* 
+    margin-top: cria distância em relação às tags acima dela, exceto a tag 'pai'
+    */
+    margin-top: 20px; 
+    background-color: rgb(172, 157, 157);
+    padding: 20px;
+    border-radius: 10px;
+    /*Define como devem ocorrer as transições:
+    all == para qualquer tipo de transição
+    0.5s == realize-a em 0.5s
+    ease == de forma suavizada */;
+    transition: all 0.5s ease; 
+ }
+
+ aside:hover{
+    /* 
+    box-shadow permite cria o efeito de 'sombra' nas caixas. Seus parâmetros são: 
+    
+    Exemplo: 
+    box-shadow: 5px 5px 10px 2px rgba(0,0,0,0.5) inset;
+    X-offset | Y-offset | Blur | Spread | Cor | Inset 
+    Deslocamento Horizontal:
+    h-offset: Define a posição horizontal da sombra. Valores positivos movem para a direita, negativos para a esquerda.
+    Deslocamento Vertical: 
+    v-offset: Define a posição vertical. Valores positivos movem para baixo, negativos para cima.Raio de Desfoque:
+    blur: (Opcional) Define a suavidade da sombra. Quanto maior o valor, mais difusa ela fica. Padrão é 0 (sombra nítida).
+    Raio de Expansão: 
+    spread: (Opcional) Aumenta ou diminui o tamanho da sombra. Valores positivos aumentam, negativos diminuem. Padrão é 0.
+    Cor:
+    color:(Opcional) Define a cor da sombra (hex, RGB, HSL, etc.). Se omitida, usa a cor do texto (color).Inset: (Opcional) Muda a sombra de externa (padrão) para interna.
+    
+    */
+    box-shadow: 2px 2px 30px 5px black;
+    /* Escala o aside quando o mouse está em cima (hover)
+    em 5% (1.05) */
+    transform: scale(1.05);
+ }
+
+ footer {
+    background-color: var(--cor_footer);
+    text-align: center;
+    /* 
+    margin-top: 5% define que sempre haverá 5% de distância (em relação à referência de caixa pai)
+    para as caixas acima da caixa em questão
+    */
+    margin-top: 5%;
+    color: white;
+
+    /* Faz preenchimento (padding) acima da caixa */
+    padding-top: 30px;
+ }
+
+ #icon-git{
+    display: inline-block;
+
+    /* Define a altura da caixa, não funciona para 'inline'*/
+    height: 30px;
+
+    /* Define que o comprimento deve se ajustar (auto) automaticamente à altura */
+    width: auto;
+    transition: transform 0.5s ease;
+ }
+
+ #icon-git:hover {
+    transform: scale(1.2);
+ }
+
+ footer p {
+    margin-bottom: 8px;
+ }
+
+ footer a {
+    text-decoration: none;
+    color: white;
+ }
+
+ footer a:hover {
+    color: var(--text_on_hover);
+ }
 
