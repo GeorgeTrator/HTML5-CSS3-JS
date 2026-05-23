@@ -2,6 +2,10 @@
 que o CSS aceite caracteres de Língua Portuguesa */
 @import url('https://fonts.googleapis.com/css2?family=Share+Tech&display=swap');
 
+/* html é aproximadamente o :root, ambos selecionam a tag html. :root tem prioridade */
+html {
+    scroll-behavior: smooth;
+}
 
 
 /* Pseudo classe pai de todos os elementos*/
