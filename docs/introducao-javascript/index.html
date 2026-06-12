@@ -1,41 +1,617 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Em Construção...</title>
+    <title>Aula Interativa: Introdução ao JavaScript</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <style>
+        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        /* CONFIGURAÇÕES BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: var(--text-light);
+            font-family: 'Urbanist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ESTRUTURA DOS SLIDES EM SCROLL */
+        .slide {
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Estado Inicial para a Animação */
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        /* Classe Ativada pelo JavaScript ao Scrollar */
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-alt {
+            background-color: var(--bg-alt);
+        }
+
+        /* TITULOS */
+        .slide-title {
+            font-size: 54px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title span {
+            color: var(--text-light);
+        }
+
+        /* LAYOUTS */
+        .content-area {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* ELEMENTOS DE TEXTO */
+        p, li {
+            font-size: 24px;
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--text-highlight);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* LISTAS */
+        ul {
+            list-style: none;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* BLOCOS DE CÓDIGO */
+        code {
+            background: var(--bg-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-highlight);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background: var(--bg-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--border-code);
+            overflow-x: auto;
+            font-size: 18px;
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* CAIXAS DE EXERCÍCIO */
+        .exercise-box {
+            background: var(--bg-card);
+            border-left: var(--border-card);
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* IMAGENS E ÍCONES */
+        .image-container {
             display: flex;
             justify-content: center;
             align-items: center;
-            margin: 0;
         }
-        
-        .container {
+
+        .image-container img {
+            border-radius: 12px;
+            border: 2px solid var(--accent-blue);
+            max-width: 100%;
+            height: auto;
+            max-height: 450px;
+            object-fit: contain;
+        }
+
+        .icon-center {
             text-align: center;
-            color: white;
+            margin-top: 20px;
         }
-        
-        h1 {
-            font-size: 3em;
+
+        .icon-large {
+            font-size: 120px;
+            color: var(--text-highlight);
+        }
+
+        .icon-blue {
+            font-size: 100px;
+            color: var(--accent-blue);
+        }
+
+        /* SLIDE DE CAPA / ENCERRAMENTO */
+        .title-slide {
+            text-align: center;
+            align-items: center;
+        }
+
+        .title-slide h1 {
+            font-size: 75px;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            color: var(--text-light);
         }
-        
-        p {
-            font-size: 1.2em;
-            opacity: 0.9;
+
+        .title-slide h1 span {
+            color: var(--accent-blue);
+        }
+
+        .title-slide p {
+            font-size: 32px;
+            color: var(--accent-blue);
+        }
+
+        .subtitle-spec {
+            margin-top: 40px;
+            font-size: 18px;
+            color: var(--text-muted);
+        }
+
+        .footer-note {
+            margin-top: 30px;
+            font-size: 20px;
+            color: var(--accent-blue);
+        }
+
+        /* ELEMENTO GRÁFICO DE FUNDO */
+        .bg-shape {
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 500px;
+            height: 500px;
+            background: rgba(0, 168, 232, 0.03);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.4);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🚧 EM CONSTRUÇÃO... 🚧</h1>
-        <p>Esta aula estará disponível em breve.</p>
-    </div>
+
+    <section class="slide title-slide">
+        <div class="bg-shape"></div>
+        <div class="content-area">
+            <h1>Introdução ao <span>JavaScript</span></h1>
+            <p>O Guia do Comportamento Web</p>
+            <p class="subtitle-spec">Inspirado em: JavaScript - O Guia Definitivo</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">A Trindade do <span>Desenvolvimento</span></h2>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><strong>HTML5:</strong> A Estrutura (Os ossos do site).</li>
+                        <li><strong>CSS3:</strong> O Estilo (A pele, roupas e cores).</li>
+                        <li><span class="highlight">JavaScript:</span> O Comportamento (O cérebro e os movimentos).</li>
+                    </ul>
+                    <p>Sem JS, a web é estática. Com JS, ela ganha vida de verdade.</p>
+                </div>
+                <div class="image-container">
+                    <a href="https://www.keentodesign.com.au/cdn-cgi/imagedelivery/eOylWWvDYZyJkbAUtQZpuQ/www.keentodesign.com.au/html.png/w=9999" target="_blank"><img src="imagens/analogia_html_css_js.jpg" alt="Analogia da Trindade Web"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Papéis <span>Claros</span></h2>
+            <div class="two-column">
+                <div class="exercise-box">
+                    <h3>O que já vimos:</h3>
+                    <p>Você já sabe criar botões com HTML e estilizá-los mudando cores e fontes com CSS.</p>
+                    <p>O <strong>JavaScript</strong> agora vai ditar a ação: o que esse botão faz quando é clicado.</p>
+                </div>
+                <div>
+                    <h3>A Grande Diferença:</h3>
+                    <ul>
+                        <li>HTML/CSS: Linguagens Declarativas (Definem o que a página é).</li>
+                        <li>JavaScript: Linguagem Lógica (Define o que acontece e quando acontece).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">De onde vem o <span>Código?</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Quando digitamos um endereço web como <code>www.google.com</code>, um processo invisível acontece:</p>
+                    <ul>
+                        <li>Seu navegador envia um pedido chamado <span class="highlight">Requisição</span>.</li>
+                        <li>Um servidor remoto localiza onde os arquivos estão guardados.</li>
+                        <li>O servidor gera e envia uma <strong>Cópia</strong> exata desses arquivos para a sua máquina.</li>
+                    </ul>
+                </div>
+                <div class="image-container">
+                    <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRWDIBtICNX-krp7xVNRweCo8Yy9kWChv0-7A&s" target="_blank"><img src="imagens/ciclo_requisicao.png" alt="Ciclo de Requisição e Resposta"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O Catálogo: <span>DNS</span></h2>
+            <div class="two-column">
+                <div class="image-container">
+                    <a href="https://agencianet.net.br/arquivos/1868869698657c63b1a7550_como_dns_funcionajpg.jpg" target="_blank"><img src="imagens/analogia_lista_tel_DNS.png" alt="Analogia de Lista Telefônica DNS"></a>
+                </div>
+                <div>
+                    <p>O <strong>DNS (Domain Name System)</strong> funciona como a lista de contatos do celular:</p>
+                    <ul>
+                        <li>Computadores usam números complexos chamados IPs (ex: 142.250.191.100).</li>
+                        <li>O DNS traduz o nome amigável "google.com" para o IP real do servidor.</li>
+                        <li>Com o endereço correto, o navegador recebe o HTML e exibe na tela.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Lado do <span>Cliente</span> (Frontend)</h2>
+            <p>Embora o JavaScript seja incrivelmente potente e possa rodar no Servidor (usando Node.js), nosso foco total agora será no <span class="highlight">Client-side</span>.</p>
+            <div class="exercise-box">
+                <h3>Fato Crítico para Entender:</h3>
+                <p>O código JavaScript que vamos escrever é interpretado e rodado diretamente dentro do navegador do seu próprio usuário, e não lá no servidor distante.</p>
+                <p>O servidor apenas despacha o arquivo de texto bruto; o processamento real acontece no computador de quem acessa.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Ambiente de <span>Trabalho</span></h2>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><strong>VS Code:</strong> Nosso ambiente de desenvolvimento inteligente que vocês já usam.</li>
+                        <li><strong>Live Server:</strong> A extensão que simula esse servidor local atualizando a tela a cada salvamento.</li>
+                        <li><strong>Console do DevTools:</strong> O painel secreto do programador JavaScript (basta apertar F12 no navegador).</li>
+                    </ul>
+                </div>
+                <div class="image-container">
+                    <img src="imagens/vscode_e_live_server.jpg" alt="VS Code e Live Server">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">A Linguagem do <span>Navegador</span></h2>
+            <p>O JavaScript foi estruturado especificamente para dar dinamismo às páginas. Suas principais marcas são:</p>
+            <ul>
+                <li><strong>Interpretada:</strong> O navegador lê e executa os comandos em tempo real, linha após linha.</li>
+                <li><strong>Dinâmica:</strong> Consegue reescrever elementos HTML e regras CSS enquanto a página já está aberta.</li>
+                <li><strong>Baseada em Eventos:</strong> Fica atenta e "escutando" as interações do usuário, como cliques e movimentos do mouse.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Comando: <span>alert()</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>O comando <code>alert()</code> cria um aviso direto na tela bloqueando as interações até que o usuário clique em 'OK'.</p>
+                    <h3>Como escrever:</h3>
+                    <pre>alert("Olá, mundo!");</pre>
+                </div>
+                <div class="icon-center">
+                    <i class="fa-solid fa-comment-dots icon-large"></i>
+                    <p>Perfeito para validar se o arquivo JS está conectado ou exibir alertas urgentes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Armazenando <span>Dados</span></h2>
+            <div class="two-column">
+                <div class="image-container">
+                    <a href="https://i.imgur.com/mZk87I0.png" target="_blank"><img src="imagens/variaveis_js.png" alt="Variáveis JS"></a>
+                </div>
+                <div>
+                    <p>Variáveis funcionam como caixas organizadoras onde guardamos informações identificadas por etiquetas.</p>
+                    <ul>
+                        <li><code>let:</code> Usado para informações que podem mudar ao longo do tempo.</li>
+                        <li><code>const:</code> Usado para valores que devem permanecer fixos (constantes).</li>
+                    </ul>
+                    <pre>let nome = "João";
+const idade = 16;</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Comando: <span>querySelector</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Como o código JavaScript consegue capturar um elemento criado no seu arquivo HTML?</p>
+                    <p>Utilizamos os mesmos seletores que aprendemos no CSS!</p>
+                    <pre>const titulo = document.querySelector("h1");</pre>
+                    <p>A partir dessa linha, a variável <code>titulo</code> controla diretamente a tag H1 do site.</p>
+                </div>
+                <div class="image-container">
+                    <a href="https://i.ytimg.com/vi/cHk2TO6KHeg/hq720.jpg?sqp=-oaymwEhCK4FEIIDSFryq4qpAxMIARUAAAAAGAElAADIQj0AgKJD&rs=AOn4CLCk0yRZm_FgM4l0ZKjxJIKKuRvsSg" target="_blank"><img src="imagens/DOM_tree_selector.png" alt="DOM Tree Selector"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mudando o <span>Estilo</span></h2>
+            <p>Conseguimos alterar as propriedades visuais manipulando o atributo <code>style</code> de qualquer elemento selecionado.</p>
+            <pre>// Seleciona o plano de fundo da página completa
+const corpo = document.querySelector("body");
+
+// Altera instantaneamente a cor de fundo para preto
+corpo.style.backgroundColor = "black";</pre>
+            <p><strong>Atenção:</strong> Propriedades CSS com hífen como <code>background-color</code> passam a ser escritas em formato CamelCase no JavaScript: <code>backgroundColor</code>.</p>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Respondendo a <span>Ações</span></h2>
+            <p>Para disparar uma alteração quando o usuário interagir, monitoramos o evento de clique (<code>onclick</code>):</p>
+            <pre>// Captura o botão do HTML
+const botao = document.querySelector("button");
+
+// Define a função que será executada ao clicar
+botao.onclick = function() {
+  alert("O botão foi acionado!");
+};</pre>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Basics vs <span>Frameworks</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Estruturas e bibliotecas famosas do mercado como <strong>React</strong>, <strong>Vue</strong> e <strong>Angular</strong> são ferramentas robustas e muito utilizadas.</p>
+                    <p>Mas lembre-se: todas elas são construídas usando puramente o <span class="highlight">JavaScript básico</span>!</p>
+                    <p>Sem dominar a lógica pura, variáveis e os conceitos de manipulação básicos, você vira apenas um replicador de códigos prontos sem entender o que faz.</p>
+                </div>
+                <div class="image-container">
+                    <a href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcScIReOKGT-_rHkoDOdgwTbc1Z-4IYI6F-KiA&s" target="_blank"><img src="imagens/frameworks.jpg" alt="Frameworks Logos"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span> (1/3)</h2>
+            <div class="exercise-box">
+                <p><strong>Exercício 1: Conexão Inicial</strong></p>
+                <p>Crie um arquivo de script externo chamado <code>script.js</code>, vincule-o ao seu HTML e faça disparar uma mensagem usando o comando <code>alert()</code> contendo o texto: "Estou aprendendo JavaScript!".</p>
+            </div>
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Saudação Personalizada</strong></p>
+                <p>Crie uma variável para guardar o seu primeiro nome. Em seguida, utilize o comando <code>alert()</code> para exibir de forma dinâmica a mensagem na tela: "Bem-vindo, [Seu Nome aqui]".</p>
+            </div>
+            <p class="footer-note"><i class="fa-solid fa-code"></i> Abram seus computadores no VS Code e iniciem os códigos!</p>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span> (2/3)</h2>
+            <div class="exercise-box">
+                <p><strong>Exercício 3: O Botão Colorido</strong></p>
+                <ul>
+                    <li>Adicione um botão no seu corpo HTML contendo o rótulo "Ficar Vermelho".</li>
+                    <li>Utilizando o JavaScript, configure para que ao clicar no botão, a cor de fundo (body) mude completamente para a cor vermelha ("red").</li>
+                </ul>
+            </div>
+            <pre>// Estrutura lógica de apoio:
+const btn = document.querySelector("button");
+btn.onclick = function() { 
+    // Insira a alteração de estilo aqui
+};</pre>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span> (3/3)</h2>
+            <div class="exercise-box">
+                <p><strong>Exercício 4: Alterando Textos Dinamicamente</strong></p>
+                <p>Escreva um título usando a tag <code>&lt;h1&gt;</code> com qualquer frase inicial no seu HTML. Abaixo, adicione um botão. Configure o JavaScript para que o clique mude o conteúdo do título para: "JavaScript é Incrível!".</p>
+            </div>
+            <div class="exercise-box">
+                <p><strong>Exercício 5: Contador de Cliques</strong></p>
+                <p>Exiba o número 0 na sua tela dentro de um parágrafo. Crie um botão associado. A cada clique efetuado nesse botão pelo usuário, o número exibido deve ser incrementado somando mais um (+1).</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Gabarito <span>Sugestão</span></h2>
+            <p>Aqui está o código JavaScript de resposta que resolve os desafios de manipulação de DOM (Exercícios 3, 4 e 5):</p>
+            <pre>// --- RESOLUÇÃO DOS EXERCÍCIOS 3 E 4 ---
+const btnCor = document.querySelector("#btnCor");
+const titulo = document.querySelector("h1");
+
+btnCor.onclick = function() {
+  document.body.style.backgroundColor = "red";
+  titulo.innerText = "JavaScript é Incrível!";
+};
+
+// --- RESOLUÇÃO DO EXERCÍCIO 5 (CONTADOR) ---
+let contador = 0;
+const display = document.querySelector("#count");
+const btnContador = document.querySelector("#btnCount");
+
+btnContador.onclick = function() {
+  contador++;
+  display.innerText = contador;
+};</pre>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Dicas de <span>Ouro</span></h2>
+            <ul>
+                <li><strong>Sempre feche suas strings:</strong> Textos brutos sempre precisam estar delimitados por aspas duplas <code>" "</code> ou aspas simples <code>' '</code>.</li>
+                <li><strong>Letras maiúsculas mudam tudo:</strong> O JavaScript diferencia maiúsculas de minúsculas. Escrever <code>queryselector</code> com o "s" minúsculo vai quebrar seu código. O correto é <code>querySelector</code>.</li>
+                <li><strong>Inspeção interna:</strong> Ficou na dúvida se o valor mudou? Use o comando <code>console.log(variavel)</code> para verificar os dados direto na aba Console do DevTools.</li>
+            </ul>
+            <div class="icon-center">
+                <i class="fa-solid fa-bug-slash icon-blue"></i>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide title-slide">
+        <div class="content-area">
+            <h2 class="slide-title">Dúvidas?</h2>
+            <p>Pratiquem bastante alterando os seletores e explorando o Console!</p>
+            <p class="footer-note">Próxima Aula: Estruturas de Decisão Lógica (if / else)</p>
+        </div>
+    </section>
+
 </body>
+
+<script>
+    // Executa o script apenas após o carregamento completo da estrutura DOM
+    document.addEventListener("DOMContentLoaded", function() {
+        
+        // Seleciona todas as seções que possuem a classe "slide"
+        const slides = document.querySelectorAll(".slide");
+
+        // Configuração do observador de intersecção
+        const observerOptions = {
+            root: null, // Usa a própria viewport como referência de tela
+            rootMargin: "0px",
+            threshold: 0.15 // Dispara o efeito quando 15% do slide estiver visível na tela
+        };
+
+        // Função que será executada quando o slide entrar na tela
+        const slideObserver = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    // Adiciona a classe que faz o elemento subir e surgir suavemente
+                    entry.target.classList.add("visible");
+                }
+            });
+        }, observerOptions);
+
+        // Ativa o monitoramento em cada um dos slides mapeados
+        slides.forEach(slide => {
+            slideObserver.observe(slide);
+        });
+
+        // Força a exibição imediata do primeiro slide (capa) ao carregar a página
+        if(slides.length > 0) {
+            slides[0].classList.add("visible");
+        }
+    });
+</script>
 </html>
