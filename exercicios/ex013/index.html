@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funções e botões!</title>
+</head>
+<body>
+    <button id="red">Ficar vermelho</button>
+
+    <!-- Adicional: voltar ao original-->
+     <button id="original">Voltar ao original </button>
+
+    <script>
+        const btn1 = document.querySelector("button#red");
+        const btn2 = document.querySelector("button#original");
+        btn1.onclick = function() {
+            document.body.style.backgroundColor = "red";
+        }
+        btn2.onclick = function() {
+            document.body.style.backgroundColor = "white";
+        }
+    </script>
+</body>
+</html>
