@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alterando Textos Dinamicamente</title>
+</head>
+<body>
+    <h1>OLÁ MUNDO!</h1>
+    <button id="btn1">Alterar texto 😈</button>
+    <button id="btn2">Voltar ao original </button>
+
+    <script>
+        const btn1 = document.querySelector("#btn1")
+        const btn2 = document.querySelector("#btn2")
+        let h1 = document.querySelector("h1")
+        btn1.onclick = function () {
+            h1.innerText = "WOW!"
+            h1.style.color = "red";
+            h1.style.backgroundColor = "blue"
+        }
+        btn2.onclick = function () {
+            h1.innerText = "OLÁ MUNDO"
+            h1.style.color = "black"
+            h1.style.backgroundColor = "white"
+        }
+    </script>
+    
+</body>
+</html>
