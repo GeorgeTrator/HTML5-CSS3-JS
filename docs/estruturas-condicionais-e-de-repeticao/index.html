@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Estruturas Condicionais e de Repetição</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        /* CONFIGURAÇÕES BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+        }
+
+        body {
+            color: var(--text-light);
+            font-family: 'Urbanist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ESTRUTURA DOS SLIDES EM SCROLL */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            
+            /* Estado Inicial para a Animação */
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        /* Classe Ativada pelo JavaScript ao Scrollar */
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-alt {
+            background-color: var(--bg-alt);
+        }
+
+        /* TITULOS */
+        .slide-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title span {
+            color: var(--text-light);
+        }
+
+        /* LAYOUTS */
+        .content-area {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* ELEMENTOS DE TEXTO */
+        p, li {
+            font-size: 22px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--text-highlight);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* LISTAS */
+        ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* BLOCOS DE CÓDIGO */
+        code {
+            background: var(--bg-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-highlight);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background: var(--bg-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--border-code);
+            overflow-x: auto;
+            font-size: 18px;
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* CAIXAS DE EXERCÍCIO */
+        .exercise-box {
+            background: var(--bg-card);
+            border-left: var(--border-card);
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* IMAGENS E ÍCONES */
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .image-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 12px;
+            border: var(--border-code);
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: var(--text-highlight);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+
+        .subtitle-spec {
+            font-size: 20px;
+            color: var(--text-highlight);
+            margin-top: 15px;
+            font-style: italic;
+        }
+
+        .bg-shape {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* TABELAS */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+
+        th, td {
+            border: 1px solid rgba(0, 168, 232, 0.3);
+            padding: 12px 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--bg-alt);
+            color: var(--accent-blue);
+            font-weight: 700;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SLIDE 1: TÍTULO -->
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area">
+            <h1 class="slide-title">Estruturas Condicionais e de <span>Repetição</span></h1>
+            <p>O Fluxo de Controle e Tomada de Decisão em Algoritmos</p>
+            <p class="subtitle-spec">Inspirado em: JavaScript - O Guia Definitivo (David Flanagan)</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <!-- SLIDE 2: INTRODUÇÃO E COERÇÃO DE TIPOS -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Conversão e Coerção de <span>Tipos</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Antes de criarmos caminhos e laços, precisamos garantir que estamos trabalhando com os dados certos. Entradas textuais (como as de formulários ou prompts) chegam como <span class="highlight">String</span>.</p>
+                    <p>Para transformá-las com segurança em tipos numéricos adequados:</p>
+                    <ul>
+                        <li><code>Number.parseInt(valor, base)</code>: Extrai e converte estritamente para um número <strong>inteiro</strong>.</li>
+                        <li><code>Number.parseFloat(valor)</code>: Preserva as casas decimais (números de ponto flutuante).</li>
+                        <li><code>Number(valor)</code>: Uma conversão direta e global da linguagem.</li>
+                    </ul>
+                </div>
+                <div class="image-container">
+                    <a href="https://i.imgur.com/mZk87I0.png" target="_blank"><img src="imagens/variaveis_js.png" alt="Variáveis JS"></a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 3: O CONCEITO DE INSTRUÇÃO -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">O que são <span>Instruções?</span></h2>
+            <p>As expressões são frases, as <strong>instruções são sentenças ou comandos</strong>.</p>
+            <p>Uma expressão produz um valor, enquanto uma instrução é executada para fazer algo acontecer. Por padrão, o interpretador executa o código sequencialmente. As estruturas que veremos hoje quebram esse fluxo linear.</p>
+            <pre>// Uma instrução de expressão (efeito colateral)
+let x = 10;
+
+// Uma instrução condicional (altera o fluxo)
+if (x > 5) {
+    console.log("Fluxo alterado!");
+}</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 4: ESTRUTURAS CONDICIONAIS - IF / ELSE -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">A Condicional Simples: <span>if / else</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>A instrução <code>if</code> é a forma fundamental de controle. Ela avalia uma expressão booleana. Se for verdadeira, executa o bloco. Caso contrário, pula ou entra no bloco <code>else</code>.</p>
+                    <pre>if (idade >= 18) {
+    console.log("Maior de idade");
+} else {
+    console.log("Menor de idade");
+}</pre>
+                </div>
+                <div class="image-container">
+                    <img src="imagens/ifElse.jpg" alt="Diagrama if else">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 5: ESTRUTURAS ANINHADAS -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Estruturas Aninhadas: <span>if / else if</span></h2>
+            <p>Quando existem múltiplos caminhos mutuamente exclusivos, encadeamos cláusulas <code>else if</code>. O JavaScript avaliará cada uma em ordem até encontrar a primeira verdadeira.</p>
+            <pre>let nota = 8.5;
+
+if (nota >= 9.0) {
+    console.log("Conceito A");
+} else if (nota >= 7.5) {
+    console.log("Conceito B"); // Executa este e ignora o resto
+} else {
+    console.log("Conceito C");
+}</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 6: A INSTRUÇÃO SWITCH -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Escolha Múltipla: <span>switch</span></h2>
+            <p>O <code>switch</code> avalia uma expressão e busca uma correspondência exata com uma das cláusulas <code>case</code>. É ideal para simplificar estruturas com muitos <code>else if</code> baseados em valores fixos.</p>
+            <p>É crucial usar a palavra-chave <code>break</code> para evitar o efeito de transbordamento (fall-through), onde o código continua executando os casos seguintes. A cláusula <code>default</code> é executada se nenhum caso bater.</p>
+            <pre>switch (cor) {
+    case "azul":
+        console.log("Cor do céu");
+        break;
+    case "verde":
+        console.log("Cor da floresta");
+        break;
+    default:
+        console.log("Cor desconhecida");
+}</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 7: LAÇOS DE REPETIÇÃO - WHILE -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Laços: <span>while</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>O laço <code>while</code> é uma estrutura de repetição baseada em pré-teste. A condição é avaliada <strong>antes</strong> da execução do bloco de código.</p>
+                    <p>Se a condição for inicialmente falsa, o corpo do laço nunca será executado.</p>
+                </div>
+                <pre>let contador = 0;
+while (contador < 3) {
+    console.log(contador);
+    contador++;
+}</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 8: LAÇOS DE REPETIÇÃO - DO WHILE -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Laços: <span>do / while</span></h2>
+            <p>Ao contrário do while clássico, o laço <code>do / while</code> faz o teste da condição no <strong>final</strong> da iteração. Isso garante que o bloco de instruções seja executado **pelo menos uma vez**, independentemente da condição ser verdadeira ou falsa.</p>
+            <pre>let i = 10;
+do {
+    console.log("Executa ao menos uma vez!");
+    i++;
+} while (i < 5);</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 9: LAÇOS DE REPETIÇÃO - FOR -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Laços: <span>for</span></h2>
+            <p>O laço <code>for</code> centraliza o controle da repetição em três expressões separadas por ponto e vírgula: <strong>inicialização</strong>, <strong>teste de condição</strong> e <strong>incremento/atualização</strong>.</p>
+            <pre>for (let i = 0; i < 5; i++) {
+    console.log("Iteração número: " + i);
+}</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 10: SALTOS DE FLUXO - BREAK E CONTINUE -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Controle de Laços: <span>break & continue</span></h2>
+            <p>Podemos alterar drasticamente o fluxo interno de qualquer laço usando instruções de salto:</p>
+            <ul>
+                <li><strong><code>break</code>:</strong> Interrompe imediatamente a execução do laço mais interno, saltando para a instrução logo após o loop.</li>
+                <li><strong><code>continue</code>:</strong> Interrompe a iteração atual e pula diretamente para o teste da próxima condição (ou expressão de incremento no laço for).</li>
+            </ul>
+            <pre>for (let i = 1; i <= 5; i++) {
+    if (i === 3) continue; // Pula o 3
+    if (i === 5) break;    // Interrompe o laço ao chegar no 5
+    console.log(i); // Imprime: 1, 2, 4
+}</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 11: MÃO NA MASSA - EXERCÍCIOS PARTE 1 -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Exercícios Práticos <span>(1/2)</span></h2>
+            
+            <div class="exercise-box">
+                <p><strong>Exercício 1 (if / else): Verificador de Login</strong></p>
+                <p>Crie uma variável contendo uma string recebida. Verifique se o texto é exatamente igual a "admin". Se for, exiba no console ou via alert() "Acesso concedido". Caso contrário, exiba "Acesso negado". Lembre-se de converter entradas se for testar números.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2 (if / else if / else): Classificador de Velocidade</strong></p>
+                <p>Escreva um script que receba um número representativo de uma velocidade. Se a velocidade for menor ou igual a 40, imprima "Velocidade Baixa". Se for maior que 40 e menor ou igual a 80, imprima "Velocidade Ideal". Se for maior que 80, exiba "Velocidade Excessiva".</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 3 (Loops): Tabuada Automatizada</strong></p>
+                <p>Escolha uma estrutura de repetição (<code>for</code>, <code>while</code> ou <code>do while</code>) e gere no console a tabuada completa do número 7, multiplicando de 1 até 10.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 12: MÃO NA MASSA - EXERCÍCIOS PARTE 2 -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Exercícios Práticos <span>(2/2)</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4 (break e continue): Filtrando Números</strong></p>
+                <p>Faça um laço de 1 a 10. Use a instrução <code>continue</code> para pular a impressão do número 5. Além disso, use a instrução <code>break</code> para encerrar completamente o laço se o contador atingir o número 9.</p>
+            </div>
+            
+            <div class="exercise-box">
+                <p><strong>Exercício 5 (Switch Desafiador - Autômatos): O Robô Explorador</strong></p>
+                <p><span class="highlight">Desafio:</span> Imagine um pequeno robô que opera como um autômato de estados simples. Ele possui uma variável de estado chamada <code>estadoAtual</code> (inicialmente "parado"). Crie um switch que leia strings de comandos recebidos: "LIGAR", "MOVER", "BLOQUEAR" e "DESLIGAR". </p>
+                <p>Desenhe as regras: Se o comando for "LIGAR", o robô passa para o estado "alerta". Se for "MOVER" e o estado for "alerta", ele passa para "andando". Se o comando for "BLOQUEAR", ele vai para "emergencia". Trate cenários inválidos usando a cláusula <code>default</code> para emitir um aviso de comando desconhecido!</p>
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- SLIDE 13: GABARITO PARCIAL -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Gabarito</h2>
+            <p>Sugestão de implementação para o Autômato do Robô:</p>
+            <pre>
+let continuar = true;
+while (continuar) {
+    // let é parecido com "var"
+    // na verdade, let é a forma moderna de declarar variáveis em js
+    // e indica o escopo* da variável
+    let estadoAtual = "alerta"; 
+    let comando = prompt(
+        "Digite um comando para o robô:\n" +
+        "LIGAR | MOVER | BLOQUEAR | DESLIGAR"
+    );
+
+    switch (comando) {
+        case "LIGAR":
+            estadoAtual = "alerta";
+            alert("Robô pronto. Estado: " + estadoAtual);
+            break;
+
+        case "MOVER":
+            if (estadoAtual === "alerta") {
+                estadoAtual = "andando";
+                alert("Robô em movimento. Estado: " + estadoAtual);
+            } else {
+                alert("Não posso mover. Robô não está em alerta!");
+            }
+            break;
+
+        case "BLOQUEAR":
+            estadoAtual = "emergencia";
+            alert("Alerta máximo! Estado: " + estadoAtual);
+            break;
+
+        case "DESLIGAR":
+            estadoAtual = "parado";
+            alert("Desligando... Estado: " + estadoAtual);
+            break;
+
+        default:
+            alert("Comando não reconhecido pelo autômato.");
+    }
+
+    // Pergunta se quer repetir o programa
+    let resposta = prompt("Deseja executar novamente? (SIM / NAO)");
+
+    if (resposta !== "SIM") {
+        continuar = false;
+        alert("Programa encerrado.");
+    }
+}
+</pre>
+        </div>
+    </section>
+
+    <!-- SLIDE 14: TABELA COMPLETA DE INSTRUÇÕES DO GUIA DEFINITIVO JAVASCRIPT-->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Tabela Completa de <span>Instruções</span></h2>
+            <p>Referência completa das instruções da linguagem, <em>JavaScript: O Guia Definitivo</em>:</p>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Instrução</th>
+                        <th>Descrição Sintética de Funcionamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td><code>expression statement</code></td><td>Avalia uma expressão com efeito colateral (atribuição, chamada de função).</td></tr>
+                    <tr><td><code>compound (block)</code></td><td>Agrupa múltiplas instruções dentro de um par de chaves <code>{ }</code>.</td></tr>
+                    <tr><td><code>empty</code></td><td>Um ponto e vírgula solitário que não faz nada; útil para corpos vazios de laços.</td></tr>
+                    <tr><td><code>let / const / var</code></td><td>Declara variáveis e constantes com escopos específicos do interpretador.</td></tr>
+                    <tr><td><code>function</code></td><td>Declara explicitamente uma função nomeada reutilizável.</td></tr>
+                    <tr><td><code>if / else</code></td><td>Executa ou salta blocos de código condicionados a um teste booleano.</td></tr>
+                    <tr><td><code>switch</code></td><td>Desvia o fluxo do programa para múltiplos rótulos case baseados em correspondência exata.</td></tr>
+                    <tr><td><code>while</code></td><td>Laço com pré-teste de expressão booleana executado repetidamente enquanto verdadeira.</td></tr>
+                    <tr><td><code>do / while</code></td><td>Laço com pós-teste executado obrigatoriamente pelo menos uma vez.</td></tr>
+                    <tr><td><code>for</code></td><td>Laço compacto contendo inicialização, teste e incremento na mesma linha.</td></tr>
+                    <tr><td><code>for / in</code></td><td>Itera através das propriedades enumeráveis de um objeto arbitrário.</td></tr>
+                    <tr><td><code>for / of</code></td><td>Itera sobre os valores de objetos iteráveis (Arrays, Strings, Maps).</td></tr>
+                    <tr><td><code>labeled statement</code></td><td>Associa um identificador a uma instrução para fins de saltos direcionados.</td></tr>
+                    <tr><td><code>break</code></td><td>Aborta e sai imediatamente do loop ou estrutura de switch ativa.</td></tr>
+                    <tr><td><code>continue</code></td><td>Abandona a iteração corrente de um laço e avança para a próxima etapa.</td></tr>
+                    <tr><td><code>return</code></td><td>Interrompe a execução de uma função e devolve um valor ao chamador.</td></tr>
+                    <tr><td><code>throw</code></td><td>Sinaliza a ocorrência de uma exceção/erro na execução corrente.</td></tr>
+                    <tr><td><code>try / catch / finally</code></td><td>Captura, trata erros gerados por throw e garante execução final de blocos.</td></tr>
+                    <tr><td><code>with</code></td><td>Estende temporariamente a cadeia de escopo (obsoleto e desencorajado).</td></tr>
+                    <tr><td><code>debugger</code></td><td>Gera um ponto de parada forçado acionando as ferramentas de desenvolvimento.</td></tr>
+                    <tr><td><code>"use strict"</code></td><td>Diretiva opcional que ativa o modo estrito de validação de código JavaScript.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- SLIDE 15: CONCLUSÃO E DICAS -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Dicas de <span>Ouro</span></h2>
+            <ul>
+                <li><strong>Cuidado com Loops Infinitos:</strong> Certifique-se sempre de que a expressão de teste em um laço <code>while</code> ou <code>for</code> eventualmente se tornará falsa.</li>
+                <li><strong>O Papel do Break:</strong> Se esquecer o <code>break</code> dentro do <code>switch</code>, o JavaScript continuará executando todos os blocos seguintes sem testar as condições!</li>
+                <li><strong>Coerção explícita:</strong> Sempre prefira converter explicitamente dados textuais com <code>Number.parseInt()</code> antes de efetuar comparações numéricas rígidas.</li>
+            </ul>
+        </div>
+    </section>
+    <script src="../util/script.js"></script>
+</body>
+</html>

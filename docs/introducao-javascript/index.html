@@ -262,7 +262,7 @@
         <div class="content-area">
             <h1>Introdução ao <span>JavaScript</span></h1>
             <p>O Guia do Comportamento Web</p>
-            <p class="subtitle-spec">Inspirado em: JavaScript - O Guia Definitivo</p>
+            <p class="subtitle-spec">Inspirado em: JavaScript - O Guia Definitivo (David Flanagan)</p>
         </div>
         <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
     </section>
@@ -568,50 +568,6 @@ btnContador.onclick = function() {
             </div>
         </div>
     </section>
-
-    <section class="slide title-slide">
-        <div class="content-area">
-            <h2 class="slide-title">Dúvidas?</h2>
-            <p>Pratiquem bastante alterando os seletores e explorando o Console!</p>
-            <p class="footer-note">Próxima Aula: Estruturas de Decisão Lógica (if / else)</p>
-        </div>
-    </section>
-
 </body>
-
-<script>
-    // Executa o script apenas após o carregamento completo da estrutura DOM
-    document.addEventListener("DOMContentLoaded", function() {
-        
-        // Seleciona todas as seções que possuem a classe "slide"
-        const slides = document.querySelectorAll(".slide");
-
-        // Configuração do observador de intersecção
-        const observerOptions = {
-            root: null, // Usa a própria viewport como referência de tela
-            rootMargin: "0px",
-            threshold: 0.15 // Dispara o efeito quando 15% do slide estiver visível na tela
-        };
-
-        // Função que será executada quando o slide entrar na tela
-        const slideObserver = new IntersectionObserver(function(entries, observer) {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    // Adiciona a classe que faz o elemento subir e surgir suavemente
-                    entry.target.classList.add("visible");
-                }
-            });
-        }, observerOptions);
-
-        // Ativa o monitoramento em cada um dos slides mapeados
-        slides.forEach(slide => {
-            slideObserver.observe(slide);
-        });
-
-        // Força a exibição imediata do primeiro slide (capa) ao carregar a página
-        if(slides.length > 0) {
-            slides[0].classList.add("visible");
-        }
-    });
-</script>
+    <script src="../util/script.js"></script>
 </html>
