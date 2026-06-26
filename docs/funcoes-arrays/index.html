@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Funções e Arrays</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        /* CONFIGURAÇÕES BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+        }
+
+        body {
+            color: var(--text-light);
+            font-family: 'Urbanist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        /* ESTRUTURA DOS SLIDES EM SCROLL */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-alt {
+            background-color: var(--bg-alt);
+        }
+
+        /* TITULOS */
+        .slide-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title span {
+            color: var(--text-light);
+        }
+
+        /* LAYOUTS */
+        .content-area {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* ELEMENTOS DE TEXTO */
+        p, li {
+            font-size: 22px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--text-highlight);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* LISTAS */
+        ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* BLOCOS DE CÓDIGO */
+        code {
+            background: var(--bg-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-highlight);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background: var(--bg-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--border-code);
+            overflow-x: auto;
+            font-size: 18px;
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* CAIXAS DE EXERCÍCIO */
+        .exercise-box {
+            background: var(--bg-card);
+            border-left: var(--border-card);
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .bg-shape {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: var(--text-highlight);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area" style="text-align: center;">
+            <h1 class="slide-title" style="font-size: 75px;">Funções e <span>Arrays</span></h1>
+            <p>Organizando Códigos e Coleções de Dados</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O que são <span>Funções?</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Lembram do <code>def</code> no Python? No JavaScript, usamos a palavra <code>function</code>!</p>
+                    <p>Uma função é como uma receita de bolo: você escreve as instruções uma única vez, guarda com um nome, e pode executar (chamar) quantas vezes quiser.</p>
+                    <ul>
+                        <li>Evita repetição de código.</li>
+                        <li>Deixa o código organizado e fácil de ler.</li>
+                        <li>Podem receber dados (parâmetros) e devolver resultados (return).</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+// Declarando a função
+function darBoasVindas(nome) {
+    alert("Olá, " + nome + "!");
+}
+
+// Chamando a função
+darBoasVindas("Turma");
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Arrays <span>(Listas)</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Na aula passada vimos variáveis simples. Mas e se eu quiser guardar o nome de 30 alunos? Criar 30 variáveis seria um pesadelo.</p>
+                    <p>Um <span class="highlight">Array</span> é uma variável especial que pode guardar múltiplos valores ao mesmo tempo, organizados por posições numéricas (índices), que sempre começam no <strong>Zero</strong>.</p>
+                </div>
+                <div>
+                    <pre>
+// Criando um Array (Lista)
+let jogos = ["Minecraft", "Valorant", "Fifa"];
+
+// Acessando valores
+console.log(jogos[0]); // Mostra: Minecraft
+console.log(jogos[1]); // Mostra: Valorant
+
+// Adicionando um novo item no final
+jogos.push("Roblox");
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Unindo <span>Arrays e Laços (For)</span></h2>
+            <p>A verdadeira mágica acontece quando juntamos os Arrays com a estrutura de repetição <code>for</code> que aprendemos na última aula.</p>
+            <p>Podemos usar a propriedade <code>.length</code> (tamanho) para que o laço percorra a lista inteira automaticamente!</p>
+            <pre>
+let frutas = ["Maçã", "Banana", "Laranja", "Uva"];
+
+// frutas.length vale 4. O "i" vai de 0 até 3.
+for (let i = 0; i < frutas.length; i++) {
+    console.log("Eu gosto de " + frutas[i]);
+}
+</pre>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span></h2>
+            
+            <div class="exercise-box">
+                <p><strong>Exercício 1: Criador de Saudação</strong></p>
+                <p>Crie uma função chamada <code>saudar</code> que recebe o nome de uma pessoa como parâmetro e exibe um <code>alert()</code> dizendo "Bem-vindo(a) ao nosso site, [nome]!". Crie um botão no HTML que, ao ser clicado, chama essa função passando o seu nome.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Lista de Compras</strong></p>
+                <p>Crie um Array chamado <code>compras</code> com 5 itens que você compraria no mercado. Em seguida, crie um laço <code>for</code> que exiba cada um desses itens no <code>console.log()</code> do navegador.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Gabarito <span>Sugestão</span></h2>
+            <pre>
+// --- EXERCÍCIO 1 ---
+function saudar(nome) {
+    alert("Bem-vindo(a) ao nosso site, " + nome + "!");
+}
+
+// Supondo que você tenha um <button id="btnSaudar"> no HTML
+const botao = document.querySelector("#btnSaudar");
+botao.onclick = function() {
+    saudar("Aluno"); 
+};
+
+// --- EXERCÍCIO 2 ---
+let compras = ["Arroz", "Feijão", "Carne", "Batata", "Refrigerante"];
+
+for (let i = 0; i < compras.length; i++) {
+    console.log("Item " + (i + 1) + ": " + compras[i]);
+}
+</pre>
+        </div>
+    </section>
+
+    <script src="../util/script.js"></script>
+</body>
+</html>
