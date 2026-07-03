@@ -42,6 +42,16 @@
             overflow-x: hidden;
         }
 
+        a{
+            text-decoration: none;
+            transition: transform 1.0s ease;
+            display: inline-block;
+        }
+
+        a:hover{
+            transform: scale(1.2);
+        }
+
         /* ESTRUTURA DOS SLIDES EM SCROLL */
         .slide {
             min-height: 100vh;
@@ -153,13 +163,76 @@
             margin-bottom: 15px;
         }
 
-        /* CAIXAS DE EXERCÍCIO */
+        /* CAIXAS DE EXERCÍCIO E OBSERVAÇÕES */
         .exercise-box {
             background: var(--bg-card);
             border-left: var(--border-card);
             padding: 25px;
             margin-top: 25px;
             border-radius: 0 12px 12px 0;
+        }
+
+        .obs-box {
+            background: rgba(222, 255, 154, 0.05);
+            border-left: 6px solid var(--text-highlight);
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* ESTILOS DA ÁREA INTERATIVA DO SIMULADOR DE ARRAY */
+        .interactive-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .control-row label {
+            font-size: 20px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .interactive-input {
+            background: var(--bg-dark);
+            border: 1px solid var(--accent-blue);
+            color: var(--text-light);
+            padding: 10px 15px;
+            font-size: 18px;
+            border-radius: 6px;
+            outline: none;
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        .interactive-btn {
+            background: var(--accent-blue);
+            color: var(--bg-main);
+            border: none;
+            padding: 10px 22px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .interactive-btn:hover {
+            background: var(--text-highlight);
+        }
+
+        .interactive-btn:active {
+            transform: scale(0.98);
         }
 
         .bg-shape {
@@ -272,6 +345,58 @@ for (let i = 0; i < frutas.length; i++) {
 
     <section class="slide">
         <div class="content-area">
+            <h2 class="slide-title">⭐ Top 5 métodos de <span>Array</span></h2>
+            <p>Antes dos exercícios, vamos ver visualmente como os principais métodos agem sobre a estrutura do vetor na memória. Use o simulador abaixo:</p>
+            
+            <div class="interactive-container">
+                <div id="array-visual" style="display: flex; gap: 12px; margin: 25px 0 45px 0; justify-content: center; flex-wrap: wrap;">
+                    </div>
+                
+                <div class="control-row">
+                    <label for="array-input">Valor:</label>
+                    <input type="text" id="array-input" class="interactive-input" placeholder="Ex: 42" style="width: 110px;">
+                    
+                    <button class="interactive-btn" onclick="doPush()">push()</button>
+                    <button class="interactive-btn" style="background-color: #ff4a4a; color: white;" onclick="doPop()">pop()</button>
+                    <button class="interactive-btn" style="background-color: var(--bg-main); color: var(--accent-blue); border: 1px solid var(--accent-blue);" onclick="doIncludes()">includes()</button>
+                    
+                    <span style="color: rgba(255,255,255,0.4); margin-left: 10px; margin-right: 5px;">|</span>
+                    
+                    <label style="font-size: 18px;">Slice (De / Até):</label>
+                    <input type="number" id="slice-start" class="interactive-input" placeholder="0" style="width: 70px; padding: 6px 10px;">
+                    <input type="number" id="slice-end" class="interactive-input" placeholder="fim" style="width: 70px; padding: 6px 10px;">
+                    <button class="interactive-btn" style="background-color: var(--bg-main); color: var(--text-highlight); border: 1px solid var(--text-highlight);" onclick="doSlice()">slice()</button>
+                    <span style="color: rgba(255,255,255,0.4); margin-left: 10px; margin-right: 5px;">|</span>
+                    <button class="interactive-btn" style="background-color: #6a11cb; color: white;" onclick="doSortAsc()">sort() Crescente</button>
+                    <button class="interactive-btn" style="background-color: #2575fc; color: white;" onclick="doSortDesc()">sort() Decrescente</button>
+                </div>
+                
+                <div id="array-message" style="color: #ff7676; font-weight: 700; font-size: 18px; margin-bottom: 10px; min-height: 25px;"></div>
+                <div id="array-results" style="font-size: 20px; color: var(--text-highlight); min-height: 30px; margin-bottom: 15px;"></div>
+                
+                <div style="font-size: 18px; color: rgba(255,255,255,0.5);">
+                    Representação em código: <code style="font-size: 16px;">let arr = <span id="current-code-array">[]</span>;</code>
+                </div>
+            </div>
+
+            <div class="obs-box">
+                <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-code-branch"></i> Observação Especial: O método <code>sort()</code></strong></p>
+                <p>O método <code>sort()</code> serve para ordenar os elementos do array. No entanto, ele tem um comportamento "complicadinho": por padrão, o JavaScript ordena os valores transformando tudo em texto (ordem alfabética). Para que ele ordene números de forma matemática correta, precisamos passar uma <strong>função lambda</strong> (uma função anônima, sem nome) dentro dos seus parênteses.</p>
+                <p>Como funções lambda são um tópico mais avançado, não precisamos entender a sintaxe interna delas agora! Basta salvar e aplicar essa receita prática de ordenação:</p>
+                
+                <pre>
+// Como ordenar os números de forma Ascendente (Menor para o Maior):
+arr.sort((a, b) => a - b);
+
+// Como ordenar os números de forma Descendente (Maior para o Menor):
+arr.sort((a, b) => b - a);
+</pre>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
             <h2 class="slide-title">Mão na <span>Massa</span></h2>
             
             <div class="exercise-box">
@@ -281,7 +406,42 @@ for (let i = 0; i < frutas.length; i++) {
 
             <div class="exercise-box">
                 <p><strong>Exercício 2: Lista de Compras</strong></p>
-                <p>Crie um Array chamado <code>compras</code> com 5 itens que você compraria no mercado. Em seguida, crie um laço <code>for</code> que exiba cada um desses itens no <code>console.log()</code> do navegador.</p>
+                <p>Crie um Array chamado <code>compras</code> com 5 itens que você compraria no mercado. Em seguida, crie um laço <code>for</code> que exiba cada um desses itens no <code>console.log()</code> ou <code>alert()</code> do navegador.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span> 2</h2>
+            <div class="exercise-box">
+                <p><strong>Exercício 3:</strong>Métodos do array</p>
+                <p>Modifique o exercício anterior (Lista de Compras) aplicando os métodos do array vistos: delete um elemento, adicione um novo elemento e, ao final, faça um slice de (2,5). Ordene o resultado e, só então, printe (exiba) os itens no <code>console.log()</code> ou <code>alert()</code></p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4:</strong> Um teste real!</p>
+                <p><a href="https://neps.academy/br/exercise/395" target="_blank"><strong>Clique aqui</strong></a> para acessar o link deste exercício mais desafiante ;)</p>
+                <p>Você será deslocado para o Neps Academy, crie uma conta (se não tiver), faça login e tente resolver o problema</p>
+                <p>Para conseguir resolvê-lo, você deve usar o cabeçalho abaixo:</p>
+                <p>
+                    <pre>
+                      // Cabeçalho necessário
+
+//neps dá o arquivo
+const fs = require("fs"); 
+//neps dá a entrada (stdin) e o formato de caracter
+const input = fs.readFileSync(0, "utf8"); 
+
+
+// Explicação breve:
+//.trim() remove espaços em branco no começo e no fim 
+//.split(/\s+/) divide a entrada por espaços entre elas "1 2 3" fica " '1' '2' '3' " e 
+//.map(Number) transforma cada uma das strings individuais em números.
+const dados = input.trim().split(/\s+/).map(Number); 
+
+                    </pre>
+                </p>
             </div>
         </div>
     </section>
@@ -312,5 +472,194 @@ for (let i = 0; i < compras.length; i++) {
     </section>
 
     <script src="../util/script.js"></script>
+
+    <script>
+        let v_arr = [];
+
+        function renderArray() {
+            const container = document.getElementById('array-visual');
+            if(!container) return;
+            container.innerHTML = '';
+            
+            // Renderiza 10 caixas fixas estruturais
+            for(let i = 0; i < 10; i++) {
+                const slot = document.createElement('div');
+                slot.style.border = '2px dashed #00A8E8';
+                slot.style.width = '70px';
+                slot.style.height = '70px';
+                slot.style.display = 'flex';
+                slot.style.alignItems = 'center';
+                slot.style.justifyContent = 'center';
+                slot.style.position = 'relative';
+                slot.style.background = i < v_arr.length ? 'rgba(0, 168, 238, 0.15)' : 'rgba(255, 255, 255, 0.02)';
+                slot.style.borderRadius = '8px';
+                slot.style.transition = 'all 0.2s ease';
+                
+                // Rótulo dos Índices
+                const indexLabel = document.createElement('span');
+                indexLabel.innerText = i;
+                indexLabel.style.position = 'absolute';
+                indexLabel.style.bottom = '-26px';
+                indexLabel.style.fontSize = '13px';
+                indexLabel.style.color = i < v_arr.length ? 'var(--accent-blue)' : 'rgba(255,255,255,0.3)';
+                indexLabel.style.fontWeight = '700';
+                slot.appendChild(indexLabel);
+                
+                // Injeta o valor caso a posição já possua elemento populado
+                if(i < v_arr.length) {
+                    const valEl = document.createElement('span');
+                    valEl.innerText = v_arr[i];
+                    valEl.style.fontSize = '22px';
+                    valEl.style.fontWeight = '700';
+                    valEl.style.color = 'var(--text-highlight)';
+                    slot.appendChild(valEl);
+                    slot.style.border = '2px solid #00A8E8';
+                    slot.style.boxShadow = '0 0 12px rgba(0, 168, 232, 0.4)';
+                }
+                container.appendChild(slot);
+            }
+            // Atualiza o let arr = [...] impresso em tela
+            document.getElementById('current-code-array').innerText = JSON.stringify(v_arr);
+        }
+
+        function doPush() {
+            const input = document.getElementById('array-input');
+            const msg = document.getElementById('array-message');
+            const res = document.getElementById('array-results');
+            msg.innerText = '';
+            res.innerText = '';
+            
+            if (v_arr.length >= 10) {
+                msg.innerText = '❌ OutOfBounds: Limite máximo do array (10 posições) foi excedido!';
+                return;
+            }
+            
+            let val = input.value.trim();
+            if (val === '') {
+                msg.innerText = '⚠️ Digite um valor válido para aplicar o push().';
+                return;
+            }
+            
+            if(!isNaN(val) && val !== '') {
+                val = Number(val);
+            }
+            
+            v_arr.push(val);
+            input.value = '';
+            renderArray();
+        }
+
+        function doPop() {
+            const msg = document.getElementById('array-message');
+            const res = document.getElementById('array-results');
+            msg.innerText = '';
+            res.innerText = '';
+            
+            if (v_arr.length === 0) {
+                msg.innerText = '⚠️ Manipulação negada: O array está vazio (Underflow), impossível remover elementos!';
+                return;
+            }
+            
+            v_arr.pop();
+            renderArray();
+        }
+
+        function doIncludes() {
+            const input = document.getElementById('array-input');
+            const res = document.getElementById('array-results');
+            const msg = document.getElementById('array-message');
+            msg.innerText = '';
+            
+            let val = input.value.trim();
+            if (val === '') {
+                msg.innerText = '⚠️ Digite um valor no campo de input para realizar a busca por includes().';
+                return;
+            }
+            
+            if(!isNaN(val) && val !== '') {
+                val = Number(val);
+            }
+            
+            const hasIt = v_arr.includes(val);
+            const displayVal = typeof val === 'string' ? `"${val}"` : val;
+            res.innerHTML = `Resultado de <code>arr.includes(${displayVal})</code>: <span style="color: ${hasIt ? '#deff9a' : '#ff7676'}; font-weight: bold;">${hasIt ? 'true' : 'false'}</span>`;
+        }
+
+        function doSlice() {
+            const res = document.getElementById('array-results');
+            const msg = document.getElementById('array-message');
+            msg.innerText = '';
+            res.innerText = '';
+            
+            const startVal = document.getElementById('slice-start').value;
+            const endVal = document.getElementById('slice-end').value;
+            
+            if(startVal === '') {
+                msg.innerText = '⚠️ Defina pelo menos o índice de início (De) para usar o slice().';
+                return;
+            }
+            
+            const start = parseInt(startVal);
+            let sliced;
+            
+            if (endVal === '') {
+                sliced = v_arr.slice(start);
+                res.innerHTML = `Resultado de <code>arr.slice(${start})</code>: <span style="color: var(--text-highlight); font-weight: bold;">${JSON.stringify(sliced)}</span>`;
+            } else {
+                const end = parseInt(endVal);
+                sliced = v_arr.slice(start, end);
+                res.innerHTML = `Resultado de <code>arr.slice(${start}, ${end})</code>: <span style="color: var(--text-highlight); font-weight: bold;">${JSON.stringify(sliced)}</span>`;
+            }
+        }
+
+        function doSortAsc() {
+            const msg = document.getElementById('array-message');
+            const res = document.getElementById('array-results');
+            msg.innerText = '';
+            res.innerText = '';
+            
+            if (v_arr.length === 0) {
+                msg.innerText = '⚠️ O array está vazio. Adicione alguns números antes de ordenar!';
+                return;
+            }
+            
+            // Aplica a lambda de ordenação numérica crescente
+            v_arr.sort((a, b) => a - b);
+            res.innerHTML = `Método aplicado: <code>arr.sort((a, b) => a - b)</code>`;
+            renderArray();
+        }
+
+        function doSortDesc() {
+            const msg = document.getElementById('array-message');
+            const res = document.getElementById('array-results');
+            msg.innerText = '';
+            res.innerText = '';
+            
+            if (v_arr.length === 0) {
+                msg.innerText = '⚠️ O array está vazio. Adicione alguns números antes de ordenar!';
+                return;
+            }
+            
+            // Aplica a lambda de ordenação numérica decrescente
+            v_arr.sort((a, b) => b - a);
+            res.innerHTML = `Método aplicado: <code>arr.sort((a, b) => b - a)</code>`;
+            renderArray();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            renderArray();
+            
+            const slides = document.querySelectorAll('.slide');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.05 });
+            
+            slides.forEach(slide => observer.observe(slide));
+        });
+    </script>
 </body>
 </html>
