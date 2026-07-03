@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificando compras!</title>
+</head>
+<body>
+
+    <script>
+        let compras = [
+            "Banana", "Melão", "Frango Assado", "Pães",
+            "Água"
+        ]
+        compras.pop();
+        compras.push("Suco de Uva")
+        let j = compras.slice(2,5)
+        j.sort((a, b) => a - b)
+        for(let i = 0; i < j.length; i++){
+            console.log((i + 1) + "º Item: " + j[i])
+        }
+    </script>
+    
+</body>
+</html>
