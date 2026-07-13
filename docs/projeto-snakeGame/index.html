@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini-projeto: Snake Game</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+
+            /* Cores tiradas do próprio jogo (style.css / script.js) */
+            --snake-head: #2e7d32;
+            --snake-body: #4caf50;
+            --apple-red: #e53935;
+            --canvas-bg: #e8f5e9;
+        }
+
+        /* CONFIGURAÇÕES BASE */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            background-color: var(--bg-main);
+        }
+
+        body {
+            color: var(--text-light);
+            font-family: 'Urbanist', sans-serif;
+            overflow-x: hidden;
+        }
+
+        a {
+            text-decoration: none;
+            transition: transform 1.0s ease;
+            display: inline-block;
+            color: var(--accent-blue);
+        }
+
+        a:hover {
+            transform: scale(1.2);
+        }
+
+        /* ESTRUTURA DOS SLIDES EM SCROLL */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .slide.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-alt {
+            background-color: var(--bg-alt);
+        }
+
+        /* TITULOS */
+        .slide-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide-title span {
+            color: var(--text-light);
+        }
+
+        /* LAYOUTS */
+        .content-area {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 50px;
+            align-items: center;
+        }
+
+        /* ELEMENTOS DE TEXTO */
+        p, li {
+            font-size: 22px;
+            line-height: 1.6;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        strong {
+            color: var(--accent-blue);
+        }
+
+        .highlight {
+            color: var(--text-highlight);
+            font-weight: 700;
+        }
+
+        h3 {
+            font-size: 30px;
+            margin-bottom: 20px;
+            color: var(--text-light);
+        }
+
+        /* LISTAS */
+        ul {
+            list-style: none;
+            margin-bottom: 20px;
+        }
+
+        ul li::before {
+            content: "•";
+            color: var(--accent-blue);
+            font-weight: bold;
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* BLOCOS DE CÓDIGO */
+        code {
+            background: var(--bg-dark);
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: var(--text-highlight);
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        pre {
+            background: var(--bg-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--border-code);
+            overflow-x: auto;
+            font-size: 18px;
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* CAIXAS DE EXERCÍCIO E OBSERVAÇÕES */
+        .exercise-box {
+            background: var(--bg-card);
+            border-left: var(--border-card);
+            padding: 25px;
+            margin-top: 25px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        .obs-box {
+            background: rgba(222, 255, 154, 0.05);
+            border-left: 6px solid var(--text-highlight);
+            padding: 25px;
+            margin-top: 35px;
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* ÁREAS INTERATIVAS */
+        .interactive-container {
+            background: var(--bg-card);
+            padding: 30px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 25px;
+            margin-bottom: 25px;
+        }
+
+        .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .control-row label {
+            font-size: 20px;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .interactive-btn {
+            background: var(--accent-blue);
+            color: var(--bg-main);
+            border: none;
+            padding: 10px 22px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+
+        .interactive-btn:hover {
+            background: var(--text-highlight);
+        }
+
+        .interactive-btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-danger { background-color: #ff4a4a; color: white; }
+        .btn-ghost {
+            background-color: var(--bg-main);
+            color: var(--text-highlight);
+            border: 1px solid var(--text-highlight);
+        }
+
+        /* MALHA (GRID) DO CANVAS */
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(20, 20px);
+            grid-template-rows: repeat(20, 20px);
+            gap: 1px;
+            background: rgba(0, 168, 232, 0.25);
+            border: 2px solid var(--accent-blue);
+            width: max-content;
+            padding: 1px;
+            border-radius: 6px;
+        }
+
+        .grid-demo div {
+            background: rgba(232, 245, 233, 0.08);
+        }
+
+        .grid-demo .cell-head { background: var(--snake-head); }
+        .grid-demo .cell-body { background: var(--snake-body); }
+        .grid-demo .cell-apple {
+            background: var(--apple-red);
+            border-radius: 50%;
+        }
+
+        /* SIMULADOR DO MOVIMENTO */
+        .sim-board {
+            display: grid;
+            grid-template-columns: repeat(10, 44px);
+            grid-template-rows: repeat(10, 44px);
+            gap: 2px;
+            background: rgba(0, 168, 232, 0.2);
+            padding: 2px;
+            border: 3px solid var(--accent-blue);
+            border-radius: 8px;
+            width: max-content;
+        }
+
+        .sim-cell {
+            background: rgba(232, 245, 233, 0.06);
+            position: relative;
+            border-radius: 3px;
+            transition: background 0.15s ease;
+        }
+
+        .sim-cell.head { background: var(--snake-head); box-shadow: 0 0 10px rgba(46,125,50,0.8); }
+        .sim-cell.body { background: var(--snake-body); }
+        .sim-cell.apple::after {
+            content: "";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 68%;
+            height: 68%;
+            background: var(--apple-red);
+            border-radius: 50%;
+        }
+
+        /* CAIXAS DO ARRAY (mesma ideia da aula passada) */
+        .array-track {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin: 20px 0 40px 0;
+        }
+
+        .array-slot {
+            border: 2px solid var(--accent-blue);
+            background: rgba(0, 168, 238, 0.15);
+            border-radius: 8px;
+            min-width: 96px;
+            padding: 10px 6px;
+            text-align: center;
+            position: relative;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 15px;
+            color: var(--text-highlight);
+        }
+
+        .array-slot .slot-index {
+            position: absolute;
+            bottom: -24px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            font-family: 'Urbanist', sans-serif;
+        }
+
+        .array-slot.is-head {
+            border-color: var(--snake-head);
+            box-shadow: 0 0 14px rgba(76, 175, 80, 0.6);
+        }
+
+        .array-slot.is-tail {
+            border-color: #ff7676;
+        }
+
+        .slot-tag {
+            display: block;
+            font-family: 'Urbanist', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
+        .tag-head { color: var(--snake-body); }
+        .tag-tail { color: #ff7676; }
+        .tag-none { color: rgba(255,255,255,0.35); }
+
+        /* HITBOX DA MAÇÃ */
+        .hitbox-demo {
+            width: 220px;
+            height: 220px;
+            border: 3px dashed var(--accent-blue);
+            background: rgba(0, 168, 232, 0.08);
+            position: relative;
+            border-radius: 4px;
+        }
+
+        .hitbox-demo .apple-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;  /* 220 / 1.1  -> equivale a raio boxSize/2.2 */
+            height: 200px;
+            background: var(--apple-red);
+            border-radius: 50%;
+        }
+
+        .hitbox-demo .gap-label {
+            position: absolute;
+            top: -30px;
+            left: 0;
+            font-size: 15px;
+            color: var(--text-highlight);
+        }
+
+        .bg-shape {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .scroll-indicator {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 18px;
+            color: var(--text-highlight);
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ============ SLIDE 1: CAPA ============ -->
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area" style="text-align: center;">
+            <h1 class="slide-title" style="font-size: 75px;">Mini-projeto: <span>Snake Game</span></h1>
+            <p>Funções e Arrays em ação: como uma lista de objetos vira uma cobrinha na tela</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <!-- ============ SLIDE 2: MAPA DA AULA ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O que vamos <span>construir?</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Nas últimas aulas aprendemos <span class="highlight">variáveis</span>, <span class="highlight">condicionais</span>, <span class="highlight">laços</span>, <span class="highlight">funções</span> e <span class="highlight">arrays</span>. Cada coisa isolada, em exemplos pequenos.</p>
+                    <p>Hoje tudo isso se junta em <strong>um projeto real</strong>. E a estrela da aula é uma velha conhecida:</p>
+                    <p><span class="highlight">A cobra NÃO é um desenho. A cobra é um Array!</span></p>
+                    <p>Um array de objetos, onde cada item guarda a posição <code>x</code> e <code>y</code> de um quadradinho do corpo.</p>
+                </div>
+                <div>
+                    <pre>
+// A cobra, no começo do jogo:
+snake = [
+    { x: 270, y: 270 }  // só a cabeça
+];
+
+// A cobra depois de comer 3 maçãs:
+snake = [
+    { x: 390, y: 270 }, // cabeça
+    { x: 360, y: 270 },
+    { x: 330, y: 270 },
+    { x: 300, y: 270 }  // cauda
+];
+</pre>
+                    <p style="font-size: 18px;">Todo o "movimento" que você vê na tela é o resultado de mexer nesse array 7 vezes por segundo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 3: A TAG CANVAS ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">HTML5: a tag <span>&lt;canvas&gt;</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>O <code>&lt;canvas&gt;</code> é literalmente uma <span class="highlight">tela de pintura em branco</span>. Diferente de uma <code>&lt;div&gt;</code>, ele não tem filhos, não tem texto, não tem layout: ele só tem <strong>pixels</strong>.</p>
+                    <p>Quem desenha nele é o JavaScript, através de um objeto chamado <strong>contexto</strong>:</p>
+                    <ul>
+                        <li>O texto dentro da tag só aparece se o navegador for antigo demais (fallback).</li>
+                        <li><code>getContext("2d")</code> devolve a "caixa de pincéis" que usaremos o jogo inteiro.</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+&lt;canvas class="gameCanva" 
+        width="600" 
+        height="600"&gt;
+    O jogo da "cobrinha" não pode
+    ser exibido no seu navegador
+&lt;/canvas&gt;
+</pre>
+                    <pre>
+const canvas = document.querySelector(".gameCanva");
+const ctx = canvas.getContext("2d");
+// ctx = nosso "pincel"
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 4: WIDTH ATRIBUTO x CSS ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Atributo <span>vs.</span> CSS</h2>
+            <p>Esse é <strong>o erro nº 1</strong> de quem começa com canvas. Preste muita atenção:</p>
+            <div class="two-column">
+                <div>
+                    <h3><i class="fa-solid fa-check" style="color: var(--text-highlight);"></i> Atributo HTML</h3>
+                    <pre>&lt;canvas width="600" height="600"&gt;</pre>
+                    <p>Define quantos <span class="highlight">pixels de verdade</span> existem dentro da tela. É o tamanho da <strong>folha de papel</strong>.</p>
+                </div>
+                <div>
+                    <h3><i class="fa-solid fa-triangle-exclamation" style="color: #ff7676;"></i> Propriedade CSS</h3>
+                    <pre>canvas { width: 600px; }</pre>
+                    <p>Define o tamanho que a folha aparenta ter na tela. É o <strong>zoom</strong> aplicado na folha depois de pronta.</p>
+                </div>
+            </div>
+
+            <div class="obs-box">
+                <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-magnifying-glass"></i> Analogia da fotografia</strong></p>
+                <p>Imagine uma foto 3x4. O <span class="highlight">atributo</span> é a resolução da foto (a quantidade de pixels que existe nela). O <span class="highlight">CSS</span> é o tamanho do porta-retratos onde você a coloca.</p>
+                <p>Se a foto tem 100 pixels e você a coloca num porta-retrato de 600px, ela <strong>estica e borra</strong>. É exatamente isso que acontece se você definir o tamanho do canvas só pelo CSS: os desenhos ficam esticados e as contas do jogo param de bater (o mouse clica num lugar e o jogo acha que foi em outro).</p>
+                <p>Por isso, no nosso jogo, o tamanho está <span class="highlight">no atributo</span> da tag, e o CSS <strong>não</strong> mexe no tamanho do canvas.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 5: CSS DO CONTAINER ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">CSS3: <span>Posicionamento e Camadas</span></h2>
+            <p>Nosso menu ("Cobrinha! / Jogar") precisa flutuar <strong>por cima</strong> do canvas, bem no centro. Sem Flexbox, resolvemos isso com posicionamento:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+.gameContainer {
+    position: relative;
+    overflow: hidden;
+}
+
+.menuGame {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+}
+
+canvas {
+    display: none;
+}
+</pre>
+                </div>
+                <div>
+                    <ul>
+                        <li><strong>position: relative</strong> no pai — ele vira o "mapa de referência". Sozinho não muda nada, mas avisa: <span class="highlight">"filhos absolutos, contem as coordenadas a partir de mim"</span>.</li>
+                        <li><strong>position: absolute</strong> no menu — ele sai do fluxo normal da página (deixa de "empurrar" os vizinhos) e flutua livremente dentro do container.</li>
+                        <li><strong>top/left: 50% + translate(-50%,-50%)</strong> — o 50% joga o <em>canto superior esquerdo</em> do menu no centro; o translate puxa o menu de volta por metade do <em>próprio</em> tamanho. Resultado: centralizado de verdade.</li>
+                        <li><strong>z-index: 10</strong> — controla a <span class="highlight">altura das camadas</span> (eixo Z, saindo da tela em direção aos seus olhos). Quem tem número maior fica na frente.</li>
+                        <li><strong>overflow: hidden</strong> — tudo que passar da borda do container é cortado. Junto com o <code>border-radius</code>, ele garante os cantos arredondados.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 6: DISPLAY NONE ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Por que <span>display: none</span> no canvas?</h2>
+            <div class="two-column">
+                <div>
+                    <p>Quando a página carrega, quem deve aparecer é o <strong>menu</strong>, não o jogo. Então o canvas nasce escondido:</p>
+                    <pre>
+canvas {
+    display: none; /* O canvas NÃO RENDERIZA */
+}
+</pre>
+                    <p>E o JavaScript faz a <span class="highlight">troca de telas</span> na hora certa, dentro da função <code>initGame()</code>:</p>
+                    <pre>
+function initGame(){
+    startMenu.style.display = "none";  // some o menu
+    canvas.style.display = "block";    // aparece o jogo
+    ...
+}
+</pre>
+                </div>
+                <div>
+                    <p>Repare que isso é um padrão que você vai usar <strong>a vida inteira</strong> no front-end: em vez de criar e destruir elementos, você só liga e desliga a visibilidade deles.</p>
+                    <div class="obs-box" style="margin-top: 0;">
+                        <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight);">display: none vs. visibility: hidden</strong></p>
+                        <p style="margin-bottom: 0;"><code>display: none</code> remove o elemento do layout (é como se ele não existisse). <code>visibility: hidden</code> apenas o torna invisível, mas o <span class="highlight">buraco dele continua ocupando espaço</span> na página.</p>
+                    </div>
+                    <p style="margin-top: 25px;">No fim do jogo (game over), fazemos o caminho inverso: escondemos o canvas e mostramos o menu de novo.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 7: A MALHA / GRID ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">A Malha <span>(o Grid invisível)</span></h2>
+            <p>O canvas tem 600 pixels. Mas a cobra <strong>não anda de 1 em 1 pixel</strong> — ela pula de quadradinho em quadradinho. Nós dividimos a tela numa <span class="highlight">matriz</span>:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+const boxSize = 30;      // lado do quadrado
+const canvasSize = 600;  // lado do canvas
+
+// Quantos quadrados cabem por linha?
+// 600 / 30 = 20
+
+// Total de casas do tabuleiro:
+// 20 x 20 = 400 casas
+</pre>
+                    <p>Como <span class="highlight">600 é divisível por 30</span>, a divisão é exata: não sobra "meio quadrado" na borda. Se o boxSize fosse 40, teríamos 15 casas — também funcionaria. Se fosse 32, sobrariam 24 pixels quebrados e a cobra nunca encostaria perfeitamente na parede.</p>
+                    <p>Todo elemento do jogo (cada pedaço da cobra e a maçã) ocupa <strong>exatamente uma casa</strong> de 30x30. Por isso tudo se encaixa.</p>
+                </div>
+                <div>
+                    <p style="font-size: 18px;">A malha 20x20 (com a cobra e a maçã ocupando casas inteiras):</p>
+                    <div class="grid-demo" id="grid-demo"></div>
+                    <p style="font-size: 16px; margin-top: 25px;">Coordenadas: a casa da coluna 9, linha 9 vale <code>x = 9 * 30 = 270</code> e <code>y = 270</code>. É exatamente onde a cabeça nasce.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 8: LOOP DO JOGO ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O Loop <span>do Jogo</span></h2>
+            <p>Um jogo não é uma "animação". É um <span class="highlight">desenho refeito do zero, várias vezes por segundo</span>. Como um flipbook (aqueles desenhos animados feitos nas quinas do caderno).</p>
+            <pre>
+// setInterval(função, intervalo_em_ms)
+// A cada 130 milissegundos, chame drawGame() de novo.
+gameInterval = setInterval(drawGame, 130);
+</pre>
+            <p>E a primeira coisa que <code>drawGame()</code> faz é <strong>apagar o frame anterior</strong>, pintando um retângulo verde do tamanho da tela inteira por cima de tudo:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+function drawGame() {
+    // 1. Apaga tudo
+    ctx.fillStyle = "#e8f5e9";
+    ctx.fillRect(0, 0, canvasSize, canvasSize);
+
+    // 2. Redesenha a cobra
+    // 3. Redesenha a maçã
+    // 4. Move o array
+    ...
+}
+</pre>
+                </div>
+                <div>
+                    <ul>
+                        <li><code>ctx.fillStyle</code> — escolhe a <strong>cor da tinta</strong> do preenchimento. Sozinho ele não desenha nada! É como pegar o pincel e molhar na cor.</li>
+                        <li><code>ctx.fillRect(x, y, largura, altura)</code> — desenha um retângulo <strong>preenchido</strong>. O <code>x, y</code> é o <span class="highlight">canto superior esquerdo</span>.</li>
+                        <li><code>ctx.strokeStyle</code> — cor do <strong>contorno</strong> (a caneta).</li>
+                        <li><code>ctx.strokeRect(x, y, l, a)</code> — desenha só o contorno, sem preencher.</li>
+                    </ul>
+                    <p style="font-size: 18px;">No nosso jogo, o <code>strokeRect</code> é desenhado <span class="highlight">na cor do fundo</span>, criando aquela linha de separação entre os quadradinhos do corpo da cobra.</p>
+                </div>
+            </div>
+            <div class="obs-box">
+                <p style="margin-bottom: 0;"><strong style="color: var(--text-highlight);"><i class="fa-solid fa-eraser"></i> Se você esquecer de apagar:</strong> a cobra vira um rastro sólido crescendo pela tela, porque cada frame novo é desenhado <strong>por cima</strong> do antigo, e o antigo nunca some. Teste isso! Comente as duas primeiras linhas do <code>drawGame</code> e veja o que acontece.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 9: A MAÇÃ - POSIÇÃO ALEATÓRIA ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">A Maçã: <span>sorteio de posição</span></h2>
+            <p>A maçã precisa nascer numa casa <strong>válida</strong> da malha — nunca "entre" dois quadrados. Veja a receita:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+function drawApple(){
+    apple = {
+        x: Math.floor(
+            Math.random() * (canvasSize / boxSize)
+        ) * boxSize,
+
+        y: Math.floor(
+            Math.random() * (canvasSize / boxSize)
+        ) * boxSize
+    }
+}
+</pre>
+                </div>
+                <div>
+                    <p>Vamos ler de dentro para fora, um passo por vez:</p>
+                    <ul>
+                        <li><code>Math.random()</code> → sorteia um decimal entre 0 e 0.999… Ex: <span class="highlight">0.734</span></li>
+                        <li><code>* (600 / 30)</code> → multiplica por 20 → <span class="highlight">14.68</span></li>
+                        <li><code>Math.floor(...)</code> → arredonda <strong>para baixo</strong> → <span class="highlight">14</span> (agora é o índice de uma coluna válida: 0 a 19)</li>
+                        <li><code>* boxSize</code> → converte índice em pixel → <span class="highlight">14 * 30 = 420</span></li>
+                    </ul>
+                    <p>Resultado: a maçã sempre cai <strong>exatamente</strong> em cima de uma casa da malha, no mesmo "sistema de coordenadas" da cobra. Isso é o que torna a colisão possível!</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 10: HITBOX DA MAÇÃ ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Geometria: <span>o círculo dentro do quadrado</span></h2>
+            <div class="two-column">
+                <div>
+                    <pre>
+ctx.fillStyle = "#e53935";
+ctx.beginPath();
+ctx.arc(
+    apple.x + boxSize / 2,  // centro X
+    apple.y + boxSize / 2,  // centro Y
+    boxSize / 2.2,          // raio
+    0,                      // ângulo inicial
+    Math.PI * 2             // ângulo final (360°)
+);
+ctx.fill();
+</pre>
+                    <p><strong>Atenção à diferença:</strong> no <code>fillRect</code>, o <code>x, y</code> é o canto superior esquerdo. No <code>ctx.arc</code>, o <code>x, y</code> é o <span class="highlight">centro do círculo</span>!</p>
+                    <p>Por isso somamos <code>boxSize / 2</code> (metade da casa) nas duas coordenadas: assim o centro do círculo cai no centro do quadrado.</p>
+                    <p style="font-size: 18px;"><code>beginPath()</code> = "começar um desenho novo" (apaga o traçado anterior da memória, senão os círculos antigos seriam redesenhados junto, criando um rastro). <code>fill()</code> = "agora sim, pinte esse traçado". Só isso — voltemos ao JS de verdade.</p>
+                </div>
+                <div style="text-align: center;">
+                    <p style="font-size: 18px;">Para o <span class="highlight">jogador</span>, a maçã é um círculo.<br>Para a <span class="highlight">engine</span>, ela é um quadrado de 30x30.</p>
+                    <div style="display: inline-block; margin-top: 40px;">
+                        <div class="hitbox-demo">
+                            <span class="gap-label">↕ folga (raio = 30/2.2 ≈ 13.6px)</span>
+                            <div class="apple-circle"></div>
+                        </div>
+                    </div>
+                    <p style="font-size: 18px; margin-top: 30px;">O raio é <code>boxSize / 2.2</code> e não <code>boxSize / 2</code> apenas por <strong>estética</strong>: com <code>/2</code> o círculo encostaria nas quatro bordas e ficaria colado nos vizinhos. O <code>2.2</code> deixa uma folguinha, e a maçã "respira" dentro da casa.</p>
+                    <p style="font-size: 18px;">Mas atenção: <span class="highlight">a colisão NÃO usa o círculo.</span> Ela compara <code>x</code> e <code>y</code> da casa. Por isso a cobra parece comer a maçã "sem encostar" nela — ela encostou na <strong>hitbox</strong>, o retângulo invisível.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 11: EVENTOS ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">JavaScript é <span>Orientado a Eventos</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Até agora nossos programas eram uma <strong>fila</strong>: linha 1, linha 2, linha 3, fim. O JavaScript do navegador não funciona assim.</p>
+                    <p>Ele fica <span class="highlight">parado, esperando algo acontecer</span>. Um clique, uma tecla, o carregamento da página. Quando acontece, ele dispara a função que estava "de plantão".</p>
+                    <p>Isso é um <strong>Event Listener</strong> — o "secretário de eventos" que anota o que aconteceu e avisa quem precisa saber.</p>
+                    <pre>
+// alvo.addEventListener(evento, função)
+
+startBtn.addEventListener("click", initGame);
+//   ^quem      ^o que      ^chame quem
+</pre>
+                    <p style="font-size: 18px;">Repare: passamos <code>initGame</code> <strong>sem os parênteses</strong>. Estamos entregando a função em si ("guarde esta receita"). Com parênteses, ela executaria na hora — e o jogo começaria sozinho!</p>
+                </div>
+                <div>
+                    <div class="obs-box" style="margin-top: 0;">
+                        <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-keyboard"></i> Escutando o teclado</strong></p>
+                        <pre style="margin-bottom: 0;">
+document.addEventListener("keydown", (event) => {
+    let key = event.keyCode;
+    const arrayKeys = [37, 38, 39, 40];
+
+    if (arrayKeys.includes(key)) {
+        event.preventDefault();
+    }
+
+    if (key === 38 && direction != "DOWN") {
+        direction = "UP";
+    } else if (key === 37 && direction != "RIGHT") {
+        direction = "LEFT";
+    } else if (key === 39 && direction != "LEFT") {
+        direction = "RIGHT";
+    } else if (key === 40 && direction != "UP") {
+        direction = "DOWN";
+    }
+});
+</pre>
+                    </div>
+                    <ul style="margin-top: 25px;">
+                        <li><code>keydown</code> = a tecla foi <strong>pressionada</strong>.</li>
+                        <li>37, 38, 39, 40 = esquerda, cima, direita, baixo. Reconheceu o <code>includes()</code>? É o mesmo da aula passada, agora num caso real!</li>
+                        <li><code>preventDefault()</code> impede o comportamento padrão do navegador (as setas rolariam a página).</li>
+                        <li>A condição <code>&& direction != "DOWN"</code> impede a cobra de <span class="highlight">dar meia-volta em si mesma</span> e morrer instantaneamente.</li>
+                        <li>O evento <strong>só muda uma variável</strong> (<code>direction</code>). Quem move a cobra continua sendo o loop.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 12: MOVIMENTO - TEORIA ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O Movimento: <span>uma ilusão de Array</span></h2>
+            <p>Aqui está <strong>o coração da aula</strong>. A cobra não "anda". A cada frame, o JavaScript faz apenas duas operações no array:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+// 1. Onde está a cabeça agora?
+let snakeX = snake[0].x;
+let snakeY = snake[0].y;
+
+// 2. Para onde ela vai?
+if (direction == "LEFT")  snakeX -= boxSize;
+if (direction == "UP")    snakeY -= boxSize;
+if (direction == "RIGHT") snakeX += boxSize;
+if (direction == "DOWN")  snakeY += boxSize;
+
+// 3. Remove a cauda (o último item)
+snake.pop();
+
+// 4. Insere a nova cabeça no ÍNDICE 0
+let newHead = { x: snakeX, y: snakeY };
+snake.unshift(newHead);
+</pre>
+                </div>
+                <div>
+                    <h3>Pense numa fila de pessoas</h3>
+                    <p>Todo mundo quer "andar para frente". Mas ninguém precisa se mexer! Basta que:</p>
+                    <ul>
+                        <li>Uma pessoa nova entre <span class="highlight">na frente da fila</span> → <code>unshift()</code></li>
+                        <li>A última pessoa <span class="highlight">saia da fila</span> → <code>pop()</code></li>
+                    </ul>
+                    <p>De longe, parece que a fila inteira andou um passo. Mas os do meio ficaram <strong>parados</strong>. Essa é exatamente a ilusão da cobrinha.</p>
+                    <p><strong>E quando ela come?</strong> Simplesmente <span class="highlight">não fazemos o pop()</span>. A cabeça nova entra, ninguém sai, e o array cresce em 1. Pronto: a cobra ficou mais comprida.</p>
+                </div>
+            </div>
+            <div class="obs-box">
+                <p style="margin-bottom: 0;"><strong style="color: var(--text-highlight);">Relembrando os métodos:</strong> <code>push()</code> adiciona no <strong>fim</strong>, <code>pop()</code> remove do <strong>fim</strong>, <code>unshift()</code> adiciona no <strong>início</strong> (índice 0) e <code>shift()</code> remove do início. Aqui usamos a dupla <code>unshift + pop</code>: entra na frente, sai por trás.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 13: SIMULADOR ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">🐍 Simulador: <span>veja o array se mexer</span></h2>
+            <p>Aperte os botões e observe <strong>os dois lados ao mesmo tempo</strong>: o tabuleiro (o que o jogador vê) e o array (o que o JavaScript realmente faz).</p>
+
+            <div class="interactive-container">
+                <div style="display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: start;">
+                    <div>
+                        <div class="sim-board" id="sim-board"></div>
+                        <p style="font-size: 15px; margin-top: 15px; color: rgba(255,255,255,0.5);">Tabuleiro 10x10 (o jogo real tem 20x20)</p>
+                    </div>
+
+                    <div>
+                        <div class="control-row">
+                            <label>Mover:</label>
+                            <button class="interactive-btn" onclick="simMove('UP')"><i class="fa-solid fa-arrow-up"></i></button>
+                            <button class="interactive-btn" onclick="simMove('LEFT')"><i class="fa-solid fa-arrow-left"></i></button>
+                            <button class="interactive-btn" onclick="simMove('DOWN')"><i class="fa-solid fa-arrow-down"></i></button>
+                            <button class="interactive-btn" onclick="simMove('RIGHT')"><i class="fa-solid fa-arrow-right"></i></button>
+                            <span style="color: rgba(255,255,255,0.4); margin: 0 5px;">|</span>
+                            <button class="interactive-btn btn-ghost" onclick="simEat()">Comer maçã (crescer)</button>
+                            <button class="interactive-btn btn-danger" onclick="simReset()">Reiniciar</button>
+                        </div>
+
+                        <div id="sim-log" style="font-size: 19px; color: var(--text-highlight); min-height: 60px; margin-bottom: 20px; font-family: 'Courier New', monospace;"></div>
+
+                        <p style="font-size: 18px; margin-bottom: 5px;">Conteúdo do array <code>snake</code> (em casas, não em pixels):</p>
+                        <div class="array-track" id="sim-array"></div>
+
+                        <div style="font-size: 17px; color: rgba(255,255,255,0.6);">
+                            Tamanho atual: <code id="sim-length">1</code> &nbsp;|&nbsp; Maçãs comidas: <code id="sim-score">0</code>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p style="font-size: 19px;">Percebeu? Quando você move, o <span class="highlight">array não cresce</span> — ele apenas troca de conteúdo. Quando você come, o <code>pop()</code> é pulado e ele <span class="highlight">ganha uma posição</span>.</p>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 14: COLISÕES ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Sistema de <span>Colisões</span></h2>
+            <p>Colisão, aqui, é só <strong>comparação de números</strong>. Nada de física complicada. São três checagens:</p>
+
+            <div class="exercise-box">
+                <p><strong>1. Colisão com as PAREDES</strong></p>
+                <pre>if (snakeX &lt; 0 || snakeX &gt;= canvasSize || snakeY &lt; 0 || snakeY &gt;= canvasSize)</pre>
+                <p style="margin-bottom: 0;">A cabeça saiu pela esquerda (<code>x &lt; 0</code>), pela direita (<code>x &gt;= 600</code>), por cima (<code>y &lt; 0</code>) ou por baixo (<code>y &gt;= 600</code>)? Repare no <code>&gt;=</code>: a última casa válida começa em <span class="highlight">570</span> (19 × 30). Se o x virasse 600, a cobra já estaria com o corpo fora da tela.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>2. Colisão com o PRÓPRIO CORPO</strong></p>
+                <pre>
+function checkCollision(headX, headY, array) {
+    for (let i = 0; i &lt; array.length; i++) {
+        if (headX == array[i].x &amp;&amp; headY == array[i].y) {
+            return true;
+        }
+    }
+    return false;
+}
+</pre>
+                <p style="margin-bottom: 0;">Aqui está o <span class="highlight">laço <code>for</code> percorrendo o array</span> exatamente como treinamos na aula passada, com <code>.length</code>! A função varre cada pedaço do corpo e pergunta: <em>"a nova cabeça vai cair em cima de você?"</em>. Se alguém responder que sim, ela retorna <code>true</code> e o jogo acaba.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>3. Colisão com a MAÇÃ</strong></p>
+                <pre>
+if (snakeX === apple.x &amp;&amp; snakeY === apple.y) {
+    drawApple();   // sorteia uma maçã nova... e NÃO faz pop()
+} else {
+    snake.pop();   // não comeu: a cauda vai embora
+}
+</pre>
+                <p style="margin-bottom: 0;">O <code>if/else</code> aqui decide entre <strong>crescer</strong> e <strong>andar</strong>. É por isso que o array e o corpo da cobra sempre têm o mesmo tamanho.</p>
+            </div>
+
+            <div class="obs-box">
+                <p style="margin-bottom: 0;"><strong style="color: var(--text-highlight);"><i class="fa-solid fa-flag-checkered"></i> Fim de jogo:</strong> chamamos <code>clearInterval(gameInterval)</code> para <span class="highlight">desligar o loop</span> (senão o jogo continuaria desenhando para sempre), mostramos o alert com o placar e trocamos as telas de volta.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 15: EXERCÍCIOS ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span></h2>
+            <p style="font-size: 19px;">Baixe/copie os três arquivos do jogo (<code>index.html</code>, <code>style.css</code>, <code>script.js</code>) e faça as modificações abaixo.</p>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 1: Placar em tempo real (Funções)</strong></p>
+                <p style="margin-bottom: 0;">Hoje só vemos a pontuação no <code>alert()</code> do fim de jogo. Crie uma função <code>drawScore()</code> que use <code>ctx.fillText()</code> para escrever <em>"Maçãs: X"</em> no canto superior esquerdo do canvas, e chame essa função dentro do <code>drawGame()</code>. Dica: a pontuação é <code>snake.length - 1</code>.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Dificuldade (Variáveis e Funções)</strong></p>
+                <p style="margin-bottom: 0;">O intervalo do jogo é fixo em 130ms. Faça a cobra <span class="highlight">acelerar</span> a cada 5 maçãs comidas. Dica: você vai precisar de <code>clearInterval()</code> e criar um novo <code>setInterval()</code> com um valor menor.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 3: A maçã "safada" (Arrays + Laços)</strong></p>
+                <p style="margin-bottom: 0;">Existe um bug no nosso jogo: a maçã pode nascer <strong>em cima do corpo da cobra</strong>! Corrija a função <code>drawApple()</code> para que, depois de sortear a posição, ela percorra o array <code>snake</code> e, se a posição já estiver ocupada, <span class="highlight">sorteie de novo</span>. Dica: use um laço <code>while</code> ou reaproveite a função <code>checkCollision()</code> que já existe.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 16: DESAFIOS ============ -->
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa 2</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4: Modo "sem paredes" (Matemática + Condicionais)</strong></p>
+                <p style="margin-bottom: 0;">Em vez de morrer ao bater na parede, faça a cobra <span class="highlight">atravessar para o outro lado</span> da tela (como no Pac-Man). Se <code>snakeX &lt; 0</code>, ela reaparece em <code>canvasSize - boxSize</code>. Faça isso para os quatro lados e remova a colisão com paredes.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 5 (Desafio): Maçã dourada</strong></p>
+                <p style="margin-bottom: 0;">Crie um <strong>array de maçãs</strong> (<code>let apples = []</code>) em vez de uma única maçã. Faça nascer uma maçã dourada aleatória que vale 3 de crescimento. Dicas: você vai precisar de <code>push()</code>, de um <code>for</code> para desenhar todas e de <code>splice()</code> (ou <code>filter()</code>) para remover a maçã comida.</p>
+            </div>
+
+            <div class="obs-box">
+                <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-bug"></i> Achou o bug do professor?</strong></p>
+                <p style="margin-bottom: 0;">Olhe com carinho o <code>initGame()</code>. Existe uma linha escrita <code>drawGame</code> — sozinha, sem os parênteses. Como vimos no slide de eventos, <span class="highlight">uma função sem parênteses não executa</span>: ali estamos apenas "mencionando" a função e jogando fora o resultado. Ou seja, essa linha <strong>não faz absolutamente nada</strong> e pode ser apagada. Encontrou? Parabéns, você acabou de fazer sua primeira revisão de código. 😉</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============ SLIDE 17: RESUMO ============ -->
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Resumo <span>da Aula</span></h2>
+            <div class="two-column">
+                <div>
+                    <h3>O que aprendemos hoje</h3>
+                    <ul>
+                        <li><strong>&lt;canvas&gt;</strong>: uma tela de pixels controlada 100% pelo JS.</li>
+                        <li><strong>Atributo ≠ CSS</strong>: resolução da folha vs. zoom da folha.</li>
+                        <li><strong>position + z-index</strong>: empilhando o menu por cima do jogo.</li>
+                        <li><strong>Malha</strong>: 600 / 30 = 20 casas. Tudo se alinha porque a divisão é exata.</li>
+                        <li><strong>Loop</strong>: apagar tudo e redesenhar, 7 vezes por segundo.</li>
+                        <li><strong>Eventos</strong>: o JS espera, o usuário age, a função responde.</li>
+                        <li><strong>Colisão</strong>: comparar <code>x</code> e <code>y</code>. Só isso.</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3>E a grande sacada</h3>
+                    <p>Um jogo inteiro, que parece complexo, se resume a:</p>
+                    <pre>
+snake.unshift(novaCabeca);  // entra na frente
+snake.pop();                // sai por trás
+</pre>
+                    <p>Aqueles métodos de array que pareciam abstratos na aula passada — <code>push</code>, <code>pop</code>, <code>includes</code>, <code>length</code> — são <span class="highlight">exatamente as ferramentas</span> que fazem um jogo funcionar.</p>
+                    <p><strong>Arrays guardam o estado. Funções organizam as regras. O loop dá vida.</strong></p>
+                    <p>É assim em todo jogo: do Snake ao seu Battle Royale favorito. Muda a escala, não a ideia.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script src="../util/script.js"></script>
+
+    <script>
+        /* ---------- MALHA 20x20 ILUSTRATIVA ---------- */
+        function renderGridDemo() {
+            const grid = document.getElementById('grid-demo');
+            if (!grid) return;
+
+            // Cobra ocupando 4 casas + maçã, em coordenadas de CASA (col, lin)
+            const snakeCells = [[9,9],[8,9],[7,9],[6,9]]; // [0] = cabeça
+            const appleCell = [14, 5];
+
+            for (let lin = 0; lin < 20; lin++) {
+                for (let col = 0; col < 20; col++) {
+                    const cell = document.createElement('div');
+                    const idx = snakeCells.findIndex(c => c[0] === col && c[1] === lin);
+                    if (idx === 0) cell.className = 'cell-head';
+                    else if (idx > 0) cell.className = 'cell-body';
+                    else if (appleCell[0] === col && appleCell[1] === lin) cell.className = 'cell-apple';
+                    grid.appendChild(cell);
+                }
+            }
+        }
+
+        /* ---------- SIMULADOR DE MOVIMENTO ---------- */
+        const SIM_SIZE = 10;
+        let simSnake = [];
+        let simApple = {};
+        let simScore = 0;
+
+        function simReset() {
+            simSnake = [
+                { x: 4, y: 5 },
+                { x: 3, y: 5 },
+                { x: 2, y: 5 }
+            ];
+            simApple = { x: 7, y: 5 };
+            simScore = 0;
+            setLog('Array inicial: a cobra tem 3 posições. Índice 0 é sempre a cabeça.');
+            renderSim();
+        }
+
+        function setLog(txt) {
+            document.getElementById('sim-log').innerHTML = txt;
+        }
+
+        function simMove(dir) {
+            let nx = simSnake[0].x;
+            let ny = simSnake[0].y;
+
+            if (dir === 'LEFT') nx -= 1;
+            if (dir === 'RIGHT') nx += 1;
+            if (dir === 'UP') ny -= 1;
+            if (dir === 'DOWN') ny += 1;
+
+            // Colisão com a parede
+            if (nx < 0 || nx >= SIM_SIZE || ny < 0 || ny >= SIM_SIZE) {
+                setLog('<span style="color:#ff7676;">💥 Colidiu com a parede! (x &lt; 0 || x &gt;= tamanho)</span><br>No jogo real: clearInterval() + alert("Fim de Jogo").');
+                return;
+            }
+
+            // Colisão com o corpo
+            for (let i = 0; i < simSnake.length; i++) {
+                if (nx === simSnake[i].x && ny === simSnake[i].y) {
+                    setLog('<span style="color:#ff7676;">💥 Colidiu com o próprio corpo! checkCollision() retornou true.</span>');
+                    return;
+                }
+            }
+
+            const comeu = (nx === simApple.x && ny === simApple.y);
+
+            if (comeu) {
+                simScore++;
+                simApple = sortearMaca();
+                simSnake.unshift({ x: nx, y: ny });
+                setLog('🍎 Comeu! → <span style="color:var(--snake-body);">snake.unshift({x:' + nx + ', y:' + ny + '})</span><br>O <strong style="color:#ff7676;">pop() foi PULADO</strong> → o array cresceu para ' + simSnake.length + ' posições.');
+            } else {
+                const cauda = simSnake[simSnake.length - 1];
+                simSnake.pop();
+                simSnake.unshift({ x: nx, y: ny });
+                setLog('<span style="color:#ff7676;">snake.pop()</span> removeu a cauda {x:' + cauda.x + ', y:' + cauda.y + '}<br><span style="color:var(--snake-body);">snake.unshift({x:' + nx + ', y:' + ny + '})</span> inseriu a nova cabeça. Tamanho continua ' + simSnake.length + '.');
+            }
+            renderSim();
+        }
+
+        function sortearMaca() {
+            let nova;
+            let ocupada = true;
+            let tentativas = 0;
+            while (ocupada && tentativas < 200) {
+                nova = {
+                    x: Math.floor(Math.random() * SIM_SIZE),
+                    y: Math.floor(Math.random() * SIM_SIZE)
+                };
+                ocupada = simSnake.some(p => p.x === nova.x && p.y === nova.y);
+                tentativas++;
+            }
+            return nova;
+        }
+
+        function simEat() {
+            // Teleporta a maçã para a frente da cabeça, se der, e come
+            const head = simSnake[0];
+            const prev = simSnake[1] || { x: head.x - 1, y: head.y };
+            const dx = head.x - prev.x;
+            const dy = head.y - prev.y;
+            const alvoX = head.x + dx;
+            const alvoY = head.y + dy;
+
+            if (alvoX < 0 || alvoX >= SIM_SIZE || alvoY < 0 || alvoY >= SIM_SIZE) {
+                setLog('<span style="color:#ff7676;">Não dá para colocar a maçã aí: seria fora do tabuleiro. Gire a cobra e tente de novo.</span>');
+                return;
+            }
+
+            simApple = { x: alvoX, y: alvoY };
+            renderSim();
+            // Come na sequência
+            if (dx === 1) simMove('RIGHT');
+            else if (dx === -1) simMove('LEFT');
+            else if (dy === 1) simMove('DOWN');
+            else simMove('UP');
+        }
+
+        function renderSim() {
+            const board = document.getElementById('sim-board');
+            if (!board) return;
+            board.innerHTML = '';
+
+            for (let y = 0; y < SIM_SIZE; y++) {
+                for (let x = 0; x < SIM_SIZE; x++) {
+                    const cell = document.createElement('div');
+                    cell.className = 'sim-cell';
+                    const idx = simSnake.findIndex(p => p.x === x && p.y === y);
+                    if (idx === 0) cell.classList.add('head');
+                    else if (idx > 0) cell.classList.add('body');
+                    else if (simApple.x === x && simApple.y === y) cell.classList.add('apple');
+                    board.appendChild(cell);
+                }
+            }
+
+            // Renderiza as caixas do array
+            const track = document.getElementById('sim-array');
+            track.innerHTML = '';
+            simSnake.forEach((p, i) => {
+                const slot = document.createElement('div');
+                slot.className = 'array-slot';
+                let tag = '<span class="slot-tag tag-none">corpo</span>';
+                if (i === 0) {
+                    slot.classList.add('is-head');
+                    tag = '<span class="slot-tag tag-head">cabeça</span>';
+                } else if (i === simSnake.length - 1) {
+                    slot.classList.add('is-tail');
+                    tag = '<span class="slot-tag tag-tail">cauda</span>';
+                }
+                slot.innerHTML = tag + '{ x: ' + p.x + ',<br>&nbsp;&nbsp;y: ' + p.y + ' }<span class="slot-index">' + i + '</span>';
+                track.appendChild(slot);
+            });
+
+            document.getElementById('sim-length').innerText = simSnake.length;
+            document.getElementById('sim-score').innerText = simScore;
+        }
+
+        /* ---------- INICIALIZAÇÃO E SCROLL REVEAL ---------- */
+        document.addEventListener("DOMContentLoaded", function() {
+            renderGridDemo();
+            simReset();
+
+            const slides = document.querySelectorAll('.slide');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.05 });
+
+            slides.forEach(slide => observer.observe(slide));
+        });
+    </script>
+</body>
+</html>
