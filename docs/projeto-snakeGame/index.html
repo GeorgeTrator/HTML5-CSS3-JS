@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <style>
-        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
         :root {
             --bg-main: #00204E;
             --bg-alt: #003060;
@@ -23,7 +22,6 @@
             --border-card: 6px solid #00A8E8;
             --border-code: 1px solid #00A8E8;
 
-            /* Cores tiradas do próprio jogo (style.css / script.js) */
             --snake-head: #2e7d32;
             --snake-body: #4caf50;
             --apple-red: #e53935;
@@ -296,7 +294,7 @@
             border-radius: 50%;
         }
 
-        /* CAIXAS DO ARRAY (mesma ideia da aula passada) */
+        /* CAIXAS DO ARRAY */
         .array-track {
             display: flex;
             gap: 12px;
@@ -415,7 +413,7 @@
         <div class="bg-shape"></div>
         <div class="content-area" style="text-align: center;">
             <h1 class="slide-title" style="font-size: 75px;">Mini-projeto: <span>Snake Game</span></h1>
-            <p>Funções e Arrays em ação: como uma lista de objetos vira uma cobrinha na tela</p>
+            <p>Funções e Arrays em ação</p>
         </div>
         <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
     </section>
@@ -427,26 +425,25 @@
             <div class="two-column">
                 <div>
                     <p>Nas últimas aulas aprendemos <span class="highlight">variáveis</span>, <span class="highlight">condicionais</span>, <span class="highlight">laços</span>, <span class="highlight">funções</span> e <span class="highlight">arrays</span>. Cada coisa isolada, em exemplos pequenos.</p>
-                    <p>Hoje tudo isso se junta em <strong>um projeto real</strong>. E a estrela da aula é uma velha conhecida:</p>
-                    <p><span class="highlight">A cobra NÃO é um desenho. A cobra é um Array!</span></p>
-                    <p>Um array de objetos, onde cada item guarda a posição <code>x</code> e <code>y</code> de um quadradinho do corpo.</p>
+                    <p>Hoje tudo isso se junta em <strong>um projeto real</strong>. E a estrela da aula é uma velha conhecida da programação: O jogo da cobrinha!</p>
+                    <p><span class="highlight">Note: A cobra é um Array</span></p>
+                    <p>Mais precisamente, um array de objetos, onde cada item guarda a posição <code>x</code> e <code>y</code> de um quadradinho do corpo.</p>
                 </div>
                 <div>
                     <pre>
 // A cobra, no começo do jogo:
 snake = [
     { x: 270, y: 270 }  // só a cabeça
+    // essa posição é dada em pixels
+    // e a definimos por meio de boxsize * 9
+    // boxsize = 30, daí 270 para x e y 
+    // Como a grid é 600x600, seu centro 
+    // está no quadrado que começa com o canto
+    // superior esquerdo em (270, 270)
 ];
 
-// A cobra depois de comer 3 maçãs:
-snake = [
-    { x: 390, y: 270 }, // cabeça
-    { x: 360, y: 270 },
-    { x: 330, y: 270 },
-    { x: 300, y: 270 }  // cauda
-];
 </pre>
-                    <p style="font-size: 18px;">Todo o "movimento" que você vê na tela é o resultado de mexer nesse array 7 vezes por segundo.</p>
+                    <p style="font-size: 18px;">Todo o "movimento" que você vê na tela é o resultado de mexer nesse array várias vezes por segundo.</p>
                 </div>
             </div>
         </div>
@@ -461,7 +458,7 @@ snake = [
                     <p>O <code>&lt;canvas&gt;</code> é literalmente uma <span class="highlight">tela de pintura em branco</span>. Diferente de uma <code>&lt;div&gt;</code>, ele não tem filhos, não tem texto, não tem layout: ele só tem <strong>pixels</strong>.</p>
                     <p>Quem desenha nele é o JavaScript, através de um objeto chamado <strong>contexto</strong>:</p>
                     <ul>
-                        <li>O texto dentro da tag só aparece se o navegador for antigo demais (fallback).</li>
+                        <li>O texto dentro da tag só aparece se o navegador for antigo demais, chamamos isso de fallback.</li>
                         <li><code>getContext("2d")</code> devolve a "caixa de pincéis" que usaremos o jogo inteiro.</li>
                     </ul>
                 </div>
@@ -515,7 +512,7 @@ const ctx = canvas.getContext("2d");
     <section class="slide">
         <div class="content-area">
             <h2 class="slide-title">CSS3: <span>Posicionamento e Camadas</span></h2>
-            <p>Nosso menu ("Cobrinha! / Jogar") precisa flutuar <strong>por cima</strong> do canvas, bem no centro. Sem Flexbox, resolvemos isso com posicionamento:</p>
+            <p>Nosso menu ("Cobrinha! / Jogar") precisa flutuar <strong>por cima</strong> do canvas, bem no centro. Sem Flexbox (que veremos no final do curso), resolvemos isso com posicionamento:</p>
             <div class="two-column">
                 <div>
                     <pre>
@@ -645,7 +642,7 @@ function drawGame() {
                         <li><code>ctx.strokeStyle</code> — cor do <strong>contorno</strong> (a caneta).</li>
                         <li><code>ctx.strokeRect(x, y, l, a)</code> — desenha só o contorno, sem preencher.</li>
                     </ul>
-                    <p style="font-size: 18px;">No nosso jogo, o <code>strokeRect</code> é desenhado <span class="highlight">na cor do fundo</span>, criando aquela linha de separação entre os quadradinhos do corpo da cobra.</p>
+                    <p style="font-size: 18px;">No nosso jogo, o <code>strokeRect</code> é desenhado <span class="highlight">na cor do fundo</span>, criando aquela linha de separação entre os quadradinhos do corpo da cobra. Por padrão ocupa 1px</p>
                 </div>
             </div>
             <div class="obs-box">
@@ -945,11 +942,6 @@ if (snakeX === apple.x &amp;&amp; snakeY === apple.y) {
                 <p><strong>Exercício 5 (Desafio): Maçã dourada</strong></p>
                 <p style="margin-bottom: 0;">Crie um <strong>array de maçãs</strong> (<code>let apples = []</code>) em vez de uma única maçã. Faça nascer uma maçã dourada aleatória que vale 3 de crescimento. Dicas: você vai precisar de <code>push()</code>, de um <code>for</code> para desenhar todas e de <code>splice()</code> (ou <code>filter()</code>) para remover a maçã comida.</p>
             </div>
-
-            <div class="obs-box">
-                <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-bug"></i> Achou o bug do professor?</strong></p>
-                <p style="margin-bottom: 0;">Olhe com carinho o <code>initGame()</code>. Existe uma linha escrita <code>drawGame</code> — sozinha, sem os parênteses. Como vimos no slide de eventos, <span class="highlight">uma função sem parênteses não executa</span>: ali estamos apenas "mencionando" a função e jogando fora o resultado. Ou seja, essa linha <strong>não faz absolutamente nada</strong> e pode ser apagada. Encontrou? Parabéns, você acabou de fazer sua primeira revisão de código. 😉</p>
-            </div>
         </div>
     </section>
 
@@ -965,9 +957,9 @@ if (snakeX === apple.x &amp;&amp; snakeY === apple.y) {
                         <li><strong>Atributo ≠ CSS</strong>: resolução da folha vs. zoom da folha.</li>
                         <li><strong>position + z-index</strong>: empilhando o menu por cima do jogo.</li>
                         <li><strong>Malha</strong>: 600 / 30 = 20 casas. Tudo se alinha porque a divisão é exata.</li>
-                        <li><strong>Loop</strong>: apagar tudo e redesenhar, 7 vezes por segundo.</li>
+                        <li><strong>Loop</strong>: apagar tudo e redesenhar, várias vezes por segundo.</li>
                         <li><strong>Eventos</strong>: o JS espera, o usuário age, a função responde.</li>
-                        <li><strong>Colisão</strong>: comparar <code>x</code> e <code>y</code>. Só isso.</li>
+                        <li><strong>Colisão</strong>: comparar <code>x</code> e <code>y</code>.</li>
                     </ul>
                 </div>
                 <div>
