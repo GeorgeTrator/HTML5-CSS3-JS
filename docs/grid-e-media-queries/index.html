@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Grid Layout e Media Queries</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; background-color: var(--bg-main); }
+        body { color: var(--text-light); font-family: 'Urbanist', sans-serif; overflow-x: hidden; }
+        a { text-decoration: none; transition: transform 0.3s ease; display: inline-block; color: var(--accent-blue); }
+        a:hover { transform: scale(1.05); }
+
+        .slide {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            padding: 60px; position: relative; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .slide.visible { opacity: 1; transform: translateY(0); }
+        .slide-alt { background-color: var(--bg-alt); }
+
+        .slide-title {
+            font-size: 48px; font-weight: 700; color: var(--accent-blue);
+            margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .slide-title span { color: var(--text-light); }
+
+        .content-area { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+
+        p, li { font-size: 22px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; }
+        strong { color: var(--accent-blue); }
+        .highlight { color: var(--text-highlight); font-weight: 700; }
+        h3 { font-size: 30px; margin-bottom: 20px; color: var(--text-light); }
+
+        ul { list-style: none; margin-bottom: 20px; }
+        ul li::before { content: "•"; color: var(--accent-blue); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+        code { background: var(--bg-dark); padding: 4px 8px; border-radius: 4px; color: var(--text-highlight); font-family: 'Courier New', Courier, monospace; }
+        pre {
+            background: var(--bg-dark); padding: 25px; border-radius: 12px; border: var(--border-code);
+            overflow-x: auto; font-size: 18px; color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace; margin-top: 15px; margin-bottom: 15px;
+        }
+
+        .exercise-box { background: var(--bg-card); border-left: var(--border-card); padding: 25px; margin-top: 25px; border-radius: 0 12px 12px 0; }
+        .obs-box { background: rgba(222, 255, 154, 0.05); border-left: 6px solid var(--text-highlight); padding: 25px; margin-top: 35px; border-radius: 0 12px 12px 0; }
+
+        .interactive-container { background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 25px; margin-bottom: 25px; }
+        .control-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 20px; }
+        .control-row label { font-size: 18px; color: var(--text-light); font-weight: 500; }
+        .interactive-input {
+            background: var(--bg-dark); border: 1px solid var(--accent-blue); color: var(--text-light);
+            padding: 8px 12px; font-size: 16px; border-radius: 6px; outline: none; font-family: 'Urbanist', sans-serif;
+        }
+        select.interactive-input { cursor: pointer; }
+        .interactive-btn {
+            background: var(--accent-blue); color: var(--bg-main); border: none; padding: 9px 18px;
+            font-size: 16px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: background 0.2s, transform 0.1s;
+        }
+        .interactive-btn:hover { background: var(--text-highlight); }
+        .interactive-btn:active { transform: scale(0.98); }
+
+        /* PLAYGROUND GRID */
+        .pg-stage-grid {
+            display: grid; /* alterado via JS */
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 10px, transparent 10px, transparent 20px);
+            border: 2px dashed var(--accent-blue);
+            border-radius: 10px;
+            min-height: 320px;
+            padding: 15px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .pg-block {
+            width: 90px; height: 90px;
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-blue); color: var(--bg-main);
+            font-weight: 700; font-size: 24px; border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(0,168,232,0.4);
+            transition: all 0.3s ease;
+        }
+        .css-output {
+            background: var(--bg-dark); border: var(--border-code); border-radius: 10px;
+            padding: 18px 22px; font-family: 'Courier New', Courier, monospace;
+            font-size: 16px; color: var(--text-light); line-height: 1.7; white-space: pre;
+        }
+        .css-output .prop { color: var(--accent-blue); }
+        .css-output .val { color: var(--text-highlight); }
+
+        .bg-shape {
+            position: absolute; top: 10%; right: 5%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-size: 18px; color: var(--text-highlight); animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area" style="text-align: center;">
+            <h1 class="slide-title" style="font-size: 70px;">Grid Layout <span>&amp; Media Queries</span></h1>
+            <p>Layouts em duas dimensões e sites que se adaptam a qualquer tela</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Flexbox <span>vs Grid</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>O <span class="highlight">Flexbox</span> organiza itens em <strong>uma dimensão</strong> (linha OU coluna).</p>
+                    <p>O <span class="highlight">Grid</span> organiza em <strong>duas dimensões ao mesmo tempo</strong> (linhas E colunas) — perfeito para o layout geral da página: cabeçalho, menu lateral, conteúdo, rodapé.</p>
+                    <p>Começa com <code>display: grid</code> no container.</p>
+                </div>
+                <div>
+                    <pre>
+.container {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+/* Cria 3 colunas de tamanho igual.
+   Os filhos preenchem célula a célula
+   automaticamente. */
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Definindo <span>a Grade</span></h2>
+            <div class="two-column">
+                <div>
+                    <h3><code>grid-template-columns</code></h3>
+                    <p>Define as colunas.</p>
+                    <h3><code>grid-template-rows</code></h3>
+                    <p>Define as linhas.</p>
+                    <p>A unidade <code>fr</code> (fração) distribui o espaço disponível proporcionalmente.</p>
+                </div>
+                <div>
+                    <pre>
+.container {
+    display: grid;
+
+    /* 3 colunas: 1 fração cada */
+    grid-template-columns: 1fr 1fr 1fr;
+
+    /* repeat() evita repetição */
+    grid-template-columns: repeat(3, 1fr);
+
+    /* minmax(): nunca menor que 150px,
+       nunca maior que 1 fração */
+    grid-template-columns:
+        repeat(3, minmax(150px, 1fr));
+}
+</pre>
+                </div>
+            </div>
+            <div class="obs-box">
+                <p style="margin-bottom:0;">🔑 <code>repeat(3, 1fr)</code> é o mesmo que <code>1fr 1fr 1fr</code>, só que mais limpo. E <code>minmax()</code> é o segredo da responsividade em grids.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Espaçamento: <span>gap</span></h2>
+            <p>Assim como no Flexbox, o <code>gap</code> controla o espaço entre as células. Ele também tem forma longa e atalho:</p>
+            <pre>
+/* Forma longa (longhand) */
+.container {
+    row-gap: 20px;      /* espaço entre linhas */
+    column-gap: 40px;   /* espaço entre colunas */
+}
+
+/* Forma curta (shorthand) — ordem: linha coluna */
+.container {
+    gap: 20px 40px;
+}
+
+/* Um valor só = mesmo espaço nos dois sentidos */
+.container {
+    gap: 20px;
+}
+</pre>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Posicionando <span>os Itens</span></h2>
+            <p>Cada item pode ocupar mais de uma célula. As propriedades <strong>longas</strong>:</p>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><code>grid-column-start</code></li>
+                        <li><code>grid-column-end</code></li>
+                        <li><code>grid-row-start</code></li>
+                        <li><code>grid-row-end</code></li>
+                    </ul>
+                    <p>As linhas da grade são numeradas a partir de <strong>1</strong>. Um item vai de uma linha inicial até uma final.</p>
+                </div>
+                <div>
+                    <pre>
+/* Forma longa (longhand) */
+.destaque {
+    grid-column-start: 1;
+    grid-column-end: 3;   /* ocupa 2 colunas */
+    grid-row-start: 1;
+    grid-row-end: 2;
+}
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Atalhos: <span>grid-column / grid-row / grid-area</span></h2>
+            <pre>
+/* grid-column: início / fim  (junta start e end) */
+.destaque { grid-column: 1 / 3; }
+
+/* grid-row: início / fim */
+.destaque { grid-row: 1 / 2; }
+
+/* span = "ocupe N colunas a partir daqui" */
+.destaque { grid-column: 1 / span 2; }
+
+/* grid-area junta TUDO: row-start / col-start / row-end / col-end */
+.destaque { grid-area: 1 / 1 / 2 / 3; }
+</pre>
+            <div class="obs-box">
+                <p style="margin-bottom:0;"><strong style="color: var(--text-highlight);"><i class="fa-solid fa-star"></i> Recomendação do W3C:</strong> a especificação de CSS do W3C <strong>encoraja os atalhos</strong> como <code>grid-column</code>, <code>grid-row</code> e <code>grid-area</code>. Eles resetam os valores omitidos e deixam o código muito mais legível do que as quatro propriedades longas separadas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Layout por <span>Nomes</span></h2>
+            <p>O jeito mais visual de montar uma página: dar <strong>nomes</strong> às áreas com <code>grid-template-areas</code> e posicionar cada item com <code>grid-area</code>:</p>
+            <pre>
+.pagina {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    grid-template-areas:
+        "cabecalho cabecalho"
+        "menu      conteudo"
+        "rodape    rodape";
+}
+
+.cabecalho { grid-area: cabecalho; }
+.menu      { grid-area: menu; }
+.conteudo  { grid-area: conteudo; }
+.rodape    { grid-area: rodape; }
+</pre>
+            <p style="font-size:18px; color: rgba(255,255,255,0.6);">Repare como o próprio CSS já "desenha" o formato da página. Lindo, né?</p>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Alinhamento <span>no Grid</span></h2>
+            <p>O Grid alinha tanto os itens dentro das células quanto a grade inteira. Cada par tem seu atalho:</p>
+            <div class="two-column">
+                <div>
+                    <h3>Itens nas células</h3>
+                    <ul>
+                        <li><code>justify-items</code> (horizontal)</li>
+                        <li><code>align-items</code> (vertical)</li>
+                        <li>Atalho: <code>place-items</code></li>
+                    </ul>
+                    <pre style="font-size:16px;">
+/* longhand */
+justify-items: center;
+align-items: center;
+
+/* shorthand */
+place-items: center;</pre>
+                </div>
+                <div>
+                    <h3>A grade inteira</h3>
+                    <ul>
+                        <li><code>justify-content</code> / <code>align-content</code></li>
+                        <li>Atalho: <code>place-content</code></li>
+                    </ul>
+                    <h3>Um item só</h3>
+                    <ul>
+                        <li><code>justify-self</code> / <code>align-self</code></li>
+                        <li>Atalho: <code>place-self</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">🧪 Playground <span>Grid</span></h2>
+            <p>Adicione blocos (tamanho fixo) e experimente as propriedades do container:</p>
+
+            <div class="interactive-container">
+                <div class="control-row">
+                    <button class="interactive-btn" onclick="addBlock()">+ Bloco</button>
+                    <button class="interactive-btn" style="background:#ff4a4a; color:white;" onclick="removeBlock()">− Bloco</button>
+                    <span id="block-count" style="color: var(--text-muted); font-size:16px;"></span>
+                    <span style="color: rgba(255,255,255,0.3);">| máx. 6 blocos</span>
+                </div>
+
+                <div class="control-row">
+                    <label>colunas:</label>
+                    <select id="ctrl-cols" class="interactive-input" onchange="applyGrid()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3" selected>3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <label>gap:</label>
+                    <select id="ctrl-gap" class="interactive-input" onchange="applyGrid()">
+                        <option value="10px">10px</option>
+                        <option value="20px" selected>20px</option>
+                        <option value="40px">40px</option>
+                        <option value="0px">0px</option>
+                    </select>
+
+                    <label>justify-items:</label>
+                    <select id="ctrl-justify" class="interactive-input" onchange="applyGrid()">
+                        <option value="stretch">stretch</option>
+                        <option value="center" selected>center</option>
+                        <option value="start">start</option>
+                        <option value="end">end</option>
+                    </select>
+
+                    <label>align-items:</label>
+                    <select id="ctrl-align" class="interactive-input" onchange="applyGrid()">
+                        <option value="stretch">stretch</option>
+                        <option value="center" selected>center</option>
+                        <option value="start">start</option>
+                        <option value="end">end</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <label>Bloco 1 ocupa 2 colunas?</label>
+                    <button class="interactive-btn" id="span-btn" style="background: var(--bg-main); color: var(--accent-blue); border:1px solid var(--accent-blue);" onclick="toggleSpan()">grid-column: 1 / span 2 (desligado)</button>
+                </div>
+
+                <div id="grid-stage" class="pg-stage-grid"></div>
+
+                <p style="font-size:16px; color: rgba(255,255,255,0.5); margin-bottom:10px;">CSS gerado do container:</p>
+                <div id="grid-css" class="css-output"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">🥕 Hora de <span>Praticar Jogando</span></h2>
+            <p>Para dominar o Grid, nada melhor que o <span class="highlight">Grid Garden</span>: você rega cenouras posicionando a água com <code>grid-column</code>, <code>grid-row</code> e companhia.</p>
+            <div class="exercise-box" style="text-align:center;">
+                <p style="font-size:26px;"><i class="fa-solid fa-carrot" style="color: #ff8c42;"></i></p>
+                <p><a href="https://cssgridgarden.com/" target="_blank" style="font-size:28px;"><strong>▶ Jogar CSS Grid Garden</strong></a></p>
+                <p style="font-size:18px; margin-bottom:0;">Dica: no canto do jogo dá para trocar o idioma para Português. Complete os 28 níveis!</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Media <span>Queries</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>De nada adianta um layout lindo no computador se ele quebra no celular. As <span class="highlight">Media Queries</span> aplicam CSS <strong>só quando certas condições são verdadeiras</strong> — geralmente, o tamanho da tela.</p>
+                    <ul>
+                        <li><code>max-width</code>: "até no máximo X" (telas pequenas).</li>
+                        <li><code>min-width</code>: "a partir de X" (telas grandes).</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+/* Estilo padrão (qualquer tela) */
+.container {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+/* Em telas de até 768px (tablet/celular):
+   vira uma coluna só */
+@media (max-width: 768px) {
+    .container {
+        grid-template-columns: 1fr;
+    }
+}
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mobile <span>First</span></h2>
+            <p>A abordagem recomendada é <span class="highlight">Mobile First</span>: escreva o estilo base pensando no celular e use <code>min-width</code> para <strong>adicionar</strong> complexidade conforme a tela cresce.</p>
+            <pre>
+/* Base: celular (uma coluna) */
+.galeria { grid-template-columns: 1fr; }
+
+/* Tablet: 2 colunas a partir de 600px */
+@media (min-width: 600px) {
+    .galeria { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* Desktop: 4 colunas a partir de 1024px */
+@media (min-width: 1024px) {
+    .galeria { grid-template-columns: repeat(4, 1fr); }
+}
+</pre>
+            <div class="obs-box">
+                <p style="margin-bottom:0;">📱 Breakpoints comuns: <strong>~600px</strong> (celular grande), <strong>~768px</strong> (tablet), <strong>~1024px</strong> (desktop). Também dá para testar <code>@media (orientation: landscape)</code> para telas deitadas.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 1: Grade básica</strong></p>
+                <p>Crie um container com <code>display: grid</code> e 6 caixinhas dentro. Use <code>grid-template-columns: repeat(3, 1fr)</code> e um <code>gap: 15px</code>. Observe as caixas se organizarem em 3 colunas e 2 linhas automaticamente.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Um item em destaque</strong></p>
+                <p>No grid anterior, faça a <strong>primeira</strong> caixa ocupar 2 colunas usando o atalho <code>grid-column: 1 / span 2</code>. Veja como as outras se reorganizam.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa 2</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 3: Layout de página com áreas</strong></p>
+                <p>Monte um layout de site com <code>grid-template-areas</code> contendo 4 regiões: <code>cabecalho</code> (largura toda), <code>menu</code> (lateral esquerda), <code>conteudo</code> (centro) e <code>rodape</code> (largura toda). Dê uma cor de fundo diferente para cada área.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4: Galeria responsiva</strong></p>
+                <p>Crie uma galeria com 8 imagens (ou caixas coloridas) usando Grid. Com Media Queries no estilo <strong>Mobile First</strong>, faça a galeria mostrar: <strong>1 coluna</strong> no celular, <strong>2 colunas</strong> a partir de 600px e <strong>4 colunas</strong> a partir de 1024px. Redimensione a janela do navegador e confira as três versões.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let gridBlocks = 5;
+        let spanOn = false;
+        const MAX_BLOCKS = 6;
+        const MIN_BLOCKS = 1;
+
+        function renderBlocks() {
+            const stage = document.getElementById('grid-stage');
+            stage.innerHTML = '';
+            for (let i = 1; i <= gridBlocks; i++) {
+                const b = document.createElement('div');
+                b.className = 'pg-block';
+                b.innerText = i;
+                if (i === 1 && spanOn) {
+                    b.style.gridColumn = '1 / span 2';
+                    b.style.background = 'var(--text-highlight)';
+                }
+                stage.appendChild(b);
+            }
+            document.getElementById('block-count').innerText = gridBlocks + ' blocos';
+        }
+
+        function addBlock() {
+            if (gridBlocks >= MAX_BLOCKS) return;
+            gridBlocks++;
+            renderBlocks();
+        }
+
+        function removeBlock() {
+            if (gridBlocks <= MIN_BLOCKS) return;
+            gridBlocks--;
+            renderBlocks();
+        }
+
+        function toggleSpan() {
+            spanOn = !spanOn;
+            document.getElementById('span-btn').innerText =
+                'grid-column: 1 / span 2 (' + (spanOn ? 'ligado' : 'desligado') + ')';
+            renderBlocks();
+        }
+
+        function applyGrid() {
+            const stage = document.getElementById('grid-stage');
+            const cols = document.getElementById('ctrl-cols').value;
+            const gap = document.getElementById('ctrl-gap').value;
+            const justify = document.getElementById('ctrl-justify').value;
+            const align = document.getElementById('ctrl-align').value;
+
+            stage.style.display = 'grid';
+            stage.style.gridTemplateColumns = 'repeat(' + cols + ', 1fr)';
+            stage.style.gap = gap;
+            stage.style.justifyItems = justify;
+            stage.style.alignItems = align;
+
+            document.getElementById('grid-css').innerHTML =
+                '.container {\n' +
+                '  <span class="prop">display</span>: <span class="val">grid</span>;\n' +
+                '  <span class="prop">grid-template-columns</span>: <span class="val">repeat(' + cols + ', 1fr)</span>;\n' +
+                '  <span class="prop">gap</span>: <span class="val">' + gap + '</span>;\n' +
+                '  <span class="prop">place-items</span>: <span class="val">' + align + ' ' + justify + '</span>;\n' +
+                '}';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            renderBlocks();
+            applyGrid();
+
+            const slides = document.querySelectorAll('.slide');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.05 });
+            slides.forEach(slide => observer.observe(slide));
+        });
+    </script>
+</body>
+</html>

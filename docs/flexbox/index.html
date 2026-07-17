@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: FlexBox</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; background-color: var(--bg-main); }
+        body { color: var(--text-light); font-family: 'Urbanist', sans-serif; overflow-x: hidden; }
+        a { text-decoration: none; transition: transform 0.3s ease; display: inline-block; color: var(--accent-blue); }
+        a:hover { transform: scale(1.05); }
+
+        .slide {
+            min-height: 100vh; display: flex; flex-direction: column; justify-content: center;
+            padding: 60px; position: relative; border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0; transform: translateY(50px); transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .slide.visible { opacity: 1; transform: translateY(0); }
+        .slide-alt { background-color: var(--bg-alt); }
+
+        .slide-title {
+            font-size: 48px; font-weight: 700; color: var(--accent-blue);
+            margin-bottom: 30px; text-transform: uppercase; letter-spacing: 2px;
+        }
+        .slide-title span { color: var(--text-light); }
+
+        .content-area { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+
+        p, li { font-size: 22px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; }
+        strong { color: var(--accent-blue); }
+        .highlight { color: var(--text-highlight); font-weight: 700; }
+        h3 { font-size: 30px; margin-bottom: 20px; color: var(--text-light); }
+
+        ul { list-style: none; margin-bottom: 20px; }
+        ul li::before { content: "•"; color: var(--accent-blue); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+        code { background: var(--bg-dark); padding: 4px 8px; border-radius: 4px; color: var(--text-highlight); font-family: 'Courier New', Courier, monospace; }
+        pre {
+            background: var(--bg-dark); padding: 25px; border-radius: 12px; border: var(--border-code);
+            overflow-x: auto; font-size: 18px; color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace; margin-top: 15px; margin-bottom: 15px;
+        }
+
+        .exercise-box { background: var(--bg-card); border-left: var(--border-card); padding: 25px; margin-top: 25px; border-radius: 0 12px 12px 0; }
+        .obs-box { background: rgba(222, 255, 154, 0.05); border-left: 6px solid var(--text-highlight); padding: 25px; margin-top: 35px; border-radius: 0 12px 12px 0; }
+
+        .interactive-container { background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 25px; margin-bottom: 25px; }
+        .control-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 20px; }
+        .control-row label { font-size: 18px; color: var(--text-light); font-weight: 500; }
+        .interactive-input {
+            background: var(--bg-dark); border: 1px solid var(--accent-blue); color: var(--text-light);
+            padding: 8px 12px; font-size: 16px; border-radius: 6px; outline: none; font-family: 'Urbanist', sans-serif;
+        }
+        select.interactive-input { cursor: pointer; }
+        .interactive-btn {
+            background: var(--accent-blue); color: var(--bg-main); border: none; padding: 9px 18px;
+            font-size: 16px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: background 0.2s, transform 0.1s;
+        }
+        .interactive-btn:hover { background: var(--text-highlight); }
+        .interactive-btn:active { transform: scale(0.98); }
+
+        /* PLAYGROUND FLEXBOX */
+        .pg-stage {
+            display: flex; /* alterado via JS */
+            background: repeating-linear-gradient(45deg, rgba(255,255,255,0.02), rgba(255,255,255,0.02) 10px, transparent 10px, transparent 20px);
+            border: 2px dashed var(--accent-blue);
+            border-radius: 10px;
+            min-height: 300px;
+            padding: 15px;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+        .pg-block {
+            width: 90px; height: 90px; flex: none; /* tamanho fixo */
+            display: flex; align-items: center; justify-content: center;
+            background: var(--accent-blue); color: var(--bg-main);
+            font-weight: 700; font-size: 24px; border-radius: 8px;
+            box-shadow: 0 4px 14px rgba(0,168,232,0.4);
+            transition: all 0.3s ease;
+        }
+        .css-output {
+            background: var(--bg-dark); border: var(--border-code); border-radius: 10px;
+            padding: 18px 22px; font-family: 'Courier New', Courier, monospace;
+            font-size: 16px; color: var(--text-light); line-height: 1.7; white-space: pre;
+        }
+        .css-output .prop { color: var(--accent-blue); }
+        .css-output .val { color: var(--text-highlight); }
+
+        .bg-shape {
+            position: absolute; top: 10%; right: 5%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-size: 18px; color: var(--text-highlight); animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area" style="text-align: center;">
+            <h1 class="slide-title" style="font-size: 75px;">Flex<span>Box</span></h1>
+            <p>Alinhando elementos em uma dimensão, sem sofrimento</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O que é <span>FlexBox?</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Até agora, alinhar caixas na tela era um pesadelo. O <span class="highlight">Flexbox</span> resolve isso: ele organiza os elementos ao longo de <strong>um eixo</strong> (uma linha OU uma coluna).</p>
+                    <p>Tudo começa aplicando <code>display: flex</code> no elemento <strong>pai</strong> (o container). Os filhos viram automaticamente <span class="highlight">itens flexíveis</span>.</p>
+                    <ul>
+                        <li><strong>Eixo principal</strong>: a direção em que os itens se alinham.</li>
+                        <li><strong>Eixo cruzado</strong>: o eixo perpendicular a ele.</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+.container {
+    display: flex;
+}
+
+/* Os filhos abaixo viram
+   "itens flex" automaticamente */
+&lt;div class="container"&gt;
+    &lt;div&gt;A&lt;/div&gt;
+    &lt;div&gt;B&lt;/div&gt;
+    &lt;div&gt;C&lt;/div&gt;
+&lt;/div&gt;
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Container: <span>direção e quebra</span></h2>
+            <p>Estas são as propriedades <strong>longas</strong> (longhand) que controlam o fluxo dos itens:</p>
+            <div class="two-column">
+                <div>
+                    <h3><code>flex-direction</code></h3>
+                    <p>Define o eixo principal:</p>
+                    <ul>
+                        <li><code>row</code> (padrão) — esquerda p/ direita</li>
+                        <li><code>row-reverse</code> — direita p/ esquerda</li>
+                        <li><code>column</code> — de cima p/ baixo</li>
+                        <li><code>column-reverse</code> — de baixo p/ cima</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3><code>flex-wrap</code></h3>
+                    <p>Define se os itens podem "quebrar" para a próxima linha:</p>
+                    <ul>
+                        <li><code>nowrap</code> (padrão) — tudo em uma linha só</li>
+                        <li><code>wrap</code> — quebra para a linha de baixo</li>
+                        <li><code>wrap-reverse</code> — quebra para cima</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Atalho: <span>flex-flow</span></h2>
+            <p>Em vez de escrever <code>flex-direction</code> e <code>flex-wrap</code> separados, dá para juntar os dois no atalho <code>flex-flow</code>:</p>
+            <pre>
+/* Forma longa (longhand) */
+.container {
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+/* Forma curta (shorthand) — mesma coisa! */
+.container {
+    flex-flow: row wrap;
+}
+</pre>
+            <div class="obs-box">
+                <p style="margin-bottom: 0;"><strong style="color: var(--text-highlight);"><i class="fa-solid fa-star"></i> Recomendação do W3C:</strong> a especificação de CSS do W3C <strong>encoraja o uso dos atalhos</strong> (como <code>flex-flow</code>). Além de deixar o código mais enxuto, o shorthand reseta automaticamente os valores que você não informou — evitando bugs em que uma propriedade antiga "sobra" e atrapalha o layout.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Alinhando <span>os itens</span></h2>
+            <p>Aqui mora a mágica do Flexbox — alinhar tudo com uma linha de código:</p>
+            <div class="two-column">
+                <div>
+                    <h3><code>justify-content</code></h3>
+                    <p>Alinha no <strong>eixo principal</strong>:</p>
+                    <ul>
+                        <li><code>flex-start</code> / <code>flex-end</code></li>
+                        <li><code>center</code></li>
+                        <li><code>space-between</code></li>
+                        <li><code>space-around</code></li>
+                        <li><code>space-evenly</code></li>
+                    </ul>
+                    <h3><code>gap</code></h3>
+                    <p>Espaço entre os itens: <code>gap: 20px;</code></p>
+                </div>
+                <div>
+                    <h3><code>align-items</code></h3>
+                    <p>Alinha no <strong>eixo cruzado</strong>:</p>
+                    <ul>
+                        <li><code>stretch</code> (padrão)</li>
+                        <li><code>flex-start</code> / <code>flex-end</code></li>
+                        <li><code>center</code></li>
+                        <li><code>baseline</code></li>
+                    </ul>
+                    <h3><code>align-content</code></h3>
+                    <p>Alinha <strong>várias linhas</strong> no eixo cruzado (só faz efeito com <code>wrap</code>).</p>
+                </div>
+            </div>
+            <div class="obs-box">
+                <p style="margin-bottom: 0;">💡 Combo campeão para centralizar QUALQUER coisa:
+                <code>display: flex; justify-content: center; align-items: center;</code></p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Propriedades <span>dos Itens</span></h2>
+            <p>As propriedades acima vão no container. Estas vão em cada <strong>item filho</strong>:</p>
+            <div class="two-column">
+                <div>
+                    <ul>
+                        <li><code>order</code>: muda a ordem visual (padrão 0).</li>
+                        <li><code>flex-grow</code>: quanto o item <strong>cresce</strong> para ocupar espaço sobrando (padrão 0).</li>
+                        <li><code>flex-shrink</code>: quanto o item <strong>encolhe</strong> quando falta espaço (padrão 1).</li>
+                        <li><code>flex-basis</code>: o <strong>tamanho base</strong> do item antes de crescer/encolher.</li>
+                        <li><code>align-self</code>: alinha <strong>só aquele item</strong> no eixo cruzado (sobrescreve o <code>align-items</code>).</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+/* Forma longa (longhand) */
+.item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 200px;
+}
+
+.item-especial {
+    order: -1;      /* vai pro início */
+    align-self: center;
+}
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Atalho: <span>flex</span></h2>
+            <p>Os três "flex-" do item (<code>grow</code>, <code>shrink</code>, <code>basis</code>) também têm um atalho — o <code>flex</code>:</p>
+            <pre>
+/* Forma longa */
+.item {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 0;
+}
+
+/* Forma curta — a ordem é: grow shrink basis */
+.item {
+    flex: 1 1 0;
+}
+
+/* Atalhos famosos que você vai ver por aí: */
+.item { flex: 1; }      /* cresce e divide o espaço igualmente */
+.item { flex: none; }   /* tamanho fixo, não cresce nem encolhe */
+</pre>
+            <div class="obs-box">
+                <p style="margin-bottom: 0;"><strong style="color: var(--text-highlight);"><i class="fa-solid fa-star"></i> Recomendação do W3C:</strong> a especificação de Flexbox diz explicitamente que autores devem <strong>preferir o atalho <code>flex</code></strong> em vez das propriedades longas separadas, justamente porque ele reseta corretamente os valores omitidos e evita comportamentos inesperados.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">🧪 Playground <span>FlexBox</span></h2>
+            <p>Chega de teoria! Adicione blocos (de tamanho fixo) e mude as propriedades do container para ver o Flexbox agir na hora:</p>
+
+            <div class="interactive-container">
+                <div class="control-row">
+                    <button class="interactive-btn" onclick="addBlock()">+ Bloco</button>
+                    <button class="interactive-btn" style="background:#ff4a4a; color:white;" onclick="removeBlock()">− Bloco</button>
+                    <span id="block-count" style="color: var(--text-muted); font-size:16px;"></span>
+                    <span style="color: rgba(255,255,255,0.3);">| máx. 6 blocos</span>
+                </div>
+
+                <div class="control-row">
+                    <label>flex-direction:</label>
+                    <select id="ctrl-direction" class="interactive-input" onchange="applyFlex()">
+                        <option value="row">row</option>
+                        <option value="row-reverse">row-reverse</option>
+                        <option value="column">column</option>
+                        <option value="column-reverse">column-reverse</option>
+                    </select>
+
+                    <label>flex-wrap:</label>
+                    <select id="ctrl-wrap" class="interactive-input" onchange="applyFlex()">
+                        <option value="wrap">wrap</option>
+                        <option value="nowrap">nowrap</option>
+                        <option value="wrap-reverse">wrap-reverse</option>
+                    </select>
+
+                    <label>gap:</label>
+                    <select id="ctrl-gap" class="interactive-input" onchange="applyFlex()">
+                        <option value="10px">10px</option>
+                        <option value="20px" selected>20px</option>
+                        <option value="40px">40px</option>
+                        <option value="0px">0px</option>
+                    </select>
+                </div>
+
+                <div class="control-row">
+                    <label>justify-content:</label>
+                    <select id="ctrl-justify" class="interactive-input" onchange="applyFlex()">
+                        <option value="flex-start">flex-start</option>
+                        <option value="center">center</option>
+                        <option value="flex-end">flex-end</option>
+                        <option value="space-between">space-between</option>
+                        <option value="space-around">space-around</option>
+                        <option value="space-evenly">space-evenly</option>
+                    </select>
+
+                    <label>align-items:</label>
+                    <select id="ctrl-align" class="interactive-input" onchange="applyFlex()">
+                        <option value="stretch">stretch</option>
+                        <option value="center">center</option>
+                        <option value="flex-start">flex-start</option>
+                        <option value="flex-end">flex-end</option>
+                    </select>
+                </div>
+
+                <div id="flex-stage" class="pg-stage"></div>
+
+                <p style="font-size:16px; color: rgba(255,255,255,0.5); margin-bottom:10px;">CSS gerado do container:</p>
+                <div id="flex-css" class="css-output"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">🐸 Hora de <span>Praticar Jogando</span></h2>
+            <p>A melhor forma de fixar Flexbox é resolvendo desafios. O <span class="highlight">Flexbox Froggy</span> é um joguinho onde você posiciona sapinhos usando exatamente as propriedades que aprendemos aqui.</p>
+            <div class="exercise-box" style="text-align:center;">
+                <p style="font-size:26px;"><i class="fa-solid fa-frog" style="color: var(--text-highlight);"></i></p>
+                <p><a href="https://flexboxfroggy.com/#pt-br" target="_blank" style="font-size:28px;"><strong>▶ Jogar Flexbox Froggy (em português)</strong></a></p>
+                <p style="font-size:18px; margin-bottom:0;">Meta: completar os 24 níveis usando <code>justify-content</code>, <code>align-items</code>, <code>flex-direction</code> e <code>order</code>.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 1: O container flex</strong></p>
+                <p>Crie uma <code>&lt;div&gt;</code> com três caixinhas dentro. Aplique <code>display: flex</code> no container e observe como as três, que antes ficavam empilhadas, agora ficam lado a lado.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Centralização perfeita</strong></p>
+                <p>Faça uma caixa ocupar a tela inteira (<code>height: 100vh</code>) e centralize um texto <strong>bem no meio</strong> dela (horizontal e vertical) usando apenas <code>justify-content</code> e <code>align-items</code>.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa 2</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 3: Menu de navegação</strong></p>
+                <p>Crie uma barra (menu) com o logo à esquerda e três links à direita, na mesma linha. Dica: use <code>display: flex</code> e <code>justify-content: space-between</code>. Adicione um <code>gap</code> entre os links.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4: Cards responsivos com shorthands</strong></p>
+                <p>Crie um container com 4 cards. Use <code>flex-flow: row wrap</code> no container (atalho!) para que os cards quebrem de linha quando a tela ficar pequena. Em cada card, use o atalho <code>flex: 1 1 250px</code> para que eles cresçam e dividam o espaço, mas nunca fiquem menores que 250px. Redimensione a janela e veja a mágica acontecer.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        let flexBlocks = 3;
+        const MAX_BLOCKS = 6;
+        const MIN_BLOCKS = 1;
+
+        function renderBlocks() {
+            const stage = document.getElementById('flex-stage');
+            stage.innerHTML = '';
+            for (let i = 1; i <= flexBlocks; i++) {
+                const b = document.createElement('div');
+                b.className = 'pg-block';
+                b.innerText = i;
+                stage.appendChild(b);
+            }
+            document.getElementById('block-count').innerText = flexBlocks + ' blocos';
+        }
+
+        function addBlock() {
+            if (flexBlocks >= MAX_BLOCKS) return;
+            flexBlocks++;
+            renderBlocks();
+        }
+
+        function removeBlock() {
+            if (flexBlocks <= MIN_BLOCKS) return;
+            flexBlocks--;
+            renderBlocks();
+        }
+
+        function applyFlex() {
+            const stage = document.getElementById('flex-stage');
+            const dir = document.getElementById('ctrl-direction').value;
+            const wrap = document.getElementById('ctrl-wrap').value;
+            const gap = document.getElementById('ctrl-gap').value;
+            const justify = document.getElementById('ctrl-justify').value;
+            const align = document.getElementById('ctrl-align').value;
+
+            stage.style.display = 'flex';
+            stage.style.flexDirection = dir;
+            stage.style.flexWrap = wrap;
+            stage.style.gap = gap;
+            stage.style.justifyContent = justify;
+            stage.style.alignItems = align;
+
+            document.getElementById('flex-css').innerHTML =
+                '.container {\n' +
+                '  <span class="prop">display</span>: <span class="val">flex</span>;\n' +
+                '  <span class="prop">flex-flow</span>: <span class="val">' + dir + ' ' + wrap + '</span>;\n' +
+                '  <span class="prop">justify-content</span>: <span class="val">' + justify + '</span>;\n' +
+                '  <span class="prop">align-items</span>: <span class="val">' + align + '</span>;\n' +
+                '  <span class="prop">gap</span>: <span class="val">' + gap + '</span>;\n' +
+                '}';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            renderBlocks();
+            applyFlex();
+
+            const slides = document.querySelectorAll('.slide');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.05 });
+            slides.forEach(slide => observer.observe(slide));
+        });
+    </script>
+</body>
+</html>

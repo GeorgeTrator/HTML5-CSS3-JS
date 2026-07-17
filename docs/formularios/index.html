@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula: Formulários</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        /* VARIÁVEIS GLOBAIS SEMÂNTICAS */
+        :root {
+            --bg-main: #00204E;
+            --bg-alt: #003060;
+            --bg-dark: #1a1a1a;
+            --bg-card: rgba(255, 255, 255, 0.05);
+            --text-light: #f5f5f5;
+            --text-muted: #daffde;
+            --text-highlight: #deff9a;
+            --accent-blue: #00A8E8;
+            --border-card: 6px solid #00A8E8;
+            --border-code: 1px solid #00A8E8;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        html { scroll-behavior: smooth; background-color: var(--bg-main); }
+
+        body { color: var(--text-light); font-family: 'Urbanist', sans-serif; overflow-x: hidden; }
+
+        a { text-decoration: none; transition: transform 1.0s ease; display: inline-block; color: var(--accent-blue); }
+        a:hover { transform: scale(1.05); }
+
+        /* ESTRUTURA DOS SLIDES EM SCROLL */
+        .slide {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 60px;
+            position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .slide.visible { opacity: 1; transform: translateY(0); }
+        .slide-alt { background-color: var(--bg-alt); }
+
+        /* TITULOS */
+        .slide-title {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--accent-blue);
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .slide-title span { color: var(--text-light); }
+
+        /* LAYOUTS */
+        .content-area { width: 100%; max-width: 1200px; margin: 0 auto; }
+        .two-column { display: grid; grid-template-columns: 1fr 1fr; gap: 50px; align-items: center; }
+
+        /* ELEMENTOS DE TEXTO */
+        p, li { font-size: 22px; line-height: 1.6; color: var(--text-muted); margin-bottom: 20px; }
+        strong { color: var(--accent-blue); }
+        .highlight { color: var(--text-highlight); font-weight: 700; }
+        h3 { font-size: 30px; margin-bottom: 20px; color: var(--text-light); }
+
+        /* LISTAS */
+        ul { list-style: none; margin-bottom: 20px; }
+        ul li::before { content: "•"; color: var(--accent-blue); font-weight: bold; display: inline-block; width: 1em; margin-left: -1em; }
+
+        /* BLOCOS DE CÓDIGO */
+        code { background: var(--bg-dark); padding: 4px 8px; border-radius: 4px; color: var(--text-highlight); font-family: 'Courier New', Courier, monospace; }
+        pre {
+            background: var(--bg-dark);
+            padding: 25px;
+            border-radius: 12px;
+            border: var(--border-code);
+            overflow-x: auto;
+            font-size: 18px;
+            color: var(--text-light);
+            font-family: 'Courier New', Courier, monospace;
+            margin-top: 15px;
+            margin-bottom: 15px;
+        }
+
+        /* CAIXAS DE EXERCÍCIO E OBSERVAÇÕES */
+        .exercise-box { background: var(--bg-card); border-left: var(--border-card); padding: 25px; margin-top: 25px; border-radius: 0 12px 12px 0; }
+        .obs-box { background: rgba(222, 255, 154, 0.05); border-left: 6px solid var(--text-highlight); padding: 25px; margin-top: 35px; border-radius: 0 12px 12px 0; }
+
+        /* ÁREA INTERATIVA */
+        .interactive-container { background: var(--bg-card); padding: 30px; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-top: 25px; margin-bottom: 25px; }
+        .control-row { display: flex; flex-wrap: wrap; gap: 15px; align-items: center; margin-bottom: 20px; }
+        .control-row label { font-size: 20px; color: var(--text-light); font-weight: 500; }
+        .interactive-input {
+            background: var(--bg-dark); border: 1px solid var(--accent-blue); color: var(--text-light);
+            padding: 10px 15px; font-size: 18px; border-radius: 6px; outline: none; font-family: 'Urbanist', sans-serif;
+        }
+        .interactive-btn {
+            background: var(--accent-blue); color: var(--bg-main); border: none; padding: 10px 22px;
+            font-size: 18px; font-weight: 700; border-radius: 6px; cursor: pointer; transition: background 0.2s, transform 0.1s;
+        }
+        .interactive-btn:hover { background: var(--text-highlight); }
+        .interactive-btn:active { transform: scale(0.98); }
+
+        /* FORMULÁRIO DEMO REAL */
+        .demo-form label { display: block; font-size: 18px; color: var(--text-light); margin: 14px 0 6px; font-weight: 500; }
+        .demo-form input {
+            width: 100%; background: var(--bg-dark); border: 1px solid var(--accent-blue); color: var(--text-light);
+            padding: 12px 14px; font-size: 17px; border-radius: 6px; outline: none; font-family: 'Urbanist', sans-serif;
+        }
+        .demo-form input:invalid { border-color: #ff7676; }
+
+        .bg-shape {
+            position: absolute; top: 10%; right: 5%; width: 300px; height: 300px;
+            background: radial-gradient(circle, rgba(0,168,232,0.1) 0%, transparent 70%);
+            z-index: 0; pointer-events: none;
+        }
+        .scroll-indicator {
+            position: absolute; bottom: 30px; left: 50%; transform: translateX(-50%);
+            font-size: 18px; color: var(--text-highlight); animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translate(-50%, 0); }
+            40% { transform: translate(-50%, -10px); }
+            60% { transform: translate(-50%, -5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <section class="slide title-slide visible">
+        <div class="bg-shape"></div>
+        <div class="content-area" style="text-align: center;">
+            <h1 class="slide-title" style="font-size: 75px;">Formulários <span>na Web</span></h1>
+            <p>Como coletar dados do usuário com HTML</p>
+        </div>
+        <div class="scroll-indicator">Role para baixo para começar <i class="fa-solid fa-chevron-down"></i></div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">O que é um <span>Formulário?</span></h2>
+            <div class="two-column">
+                <div>
+                    <p>Um <span class="highlight">formulário</span> é a forma padrão de coletar dados do usuário: login, cadastro, busca, comentário — tudo isso são formulários.</p>
+                    <p>Ele vive dentro da tag <code>&lt;form&gt;</code> e é composto por campos (<code>&lt;input&gt;</code>) e um botão de envio.</p>
+                    <ul>
+                        <li><code>action</code>: para onde os dados vão.</li>
+                        <li><code>method</code>: como os dados são enviados.</li>
+                    </ul>
+                </div>
+                <div>
+                    <pre>
+&lt;form action="/cadastro" method="post"&gt;
+    &lt;label&gt;Nome:&lt;/label&gt;
+    &lt;input type="text" name="usuario"&gt;
+
+    &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+</pre>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">GET vs <span>POST</span></h2>
+            <p>O atributo <code>method</code> define o "jeito" de enviar os dados. Existem dois principais:</p>
+            <div class="two-column" style="align-items: stretch;">
+                <div class="obs-box" style="margin-top: 10px; border-left-color: var(--accent-blue);">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> GET</h3>
+                    <ul>
+                        <li>Dados vão <strong>na URL</strong> (após o <code>?</code>).</li>
+                        <li>Visíveis, ficam no histórico e podem ser favoritados.</li>
+                        <li>Ideal para <span class="highlight">buscas</span> e filtros.</li>
+                        <li>Não use para senhas!</li>
+                    </ul>
+                </div>
+                <div class="obs-box" style="margin-top: 10px;">
+                    <h3><i class="fa-solid fa-lock"></i> POST</h3>
+                    <ul>
+                        <li>Dados vão <strong>no corpo</strong> da requisição.</li>
+                        <li>Não aparecem na URL.</li>
+                        <li>Ideal para <span class="highlight">cadastros, login</span> e envio de dados sensíveis.</li>
+                        <li>Sem limite prático de tamanho.</li>
+                    </ul>
+                </div>
+            </div>
+            <p style="margin-top: 25px; font-size: 19px;">Resumo: <strong>GET</strong> = "pedir para ver". <strong>POST</strong> = "enviar para guardar".</p>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Simulador <span>GET / POST</span></h2>
+            <p>Preencha o campo, escolha o método e veja a diferença de onde os dados aparecem:</p>
+
+            <div class="interactive-container">
+                <div class="control-row">
+                    <label for="sim-nome">Cidade de busca:</label>
+                    <input type="text" id="sim-nome" class="interactive-input" placeholder="Ex: Joinville" style="width: 200px;">
+                    <button class="interactive-btn" onclick="simular('get')">Enviar com GET</button>
+                    <button class="interactive-btn" style="background-color: #6a11cb; color: white;" onclick="simular('post')">Enviar com POST</button>
+                </div>
+                <div id="sim-result" style="font-size: 19px; color: var(--text-highlight); min-height: 30px;"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Tipos de <span>Campo (input)</span></h2>
+            <p>O atributo <code>type</code> muda o comportamento do campo. Os principais:</p>
+            <div class="two-column">
+                <div>
+                    <pre>
+&lt;!-- Texto simples (nome) --&gt;
+&lt;input type="text" name="nome"
+       placeholder="Seu nome"
+       required maxlength="30"&gt;
+
+&lt;!-- Senha (esconde os caracteres) --&gt;
+&lt;input type="password" name="senha"
+       required minlength="6"&gt;
+
+&lt;!-- Data --&gt;
+&lt;input type="date" name="nascimento"&gt;
+
+&lt;!-- Número, com limites --&gt;
+&lt;input type="number" name="idade"
+       min="0" max="120"&gt;
+</pre>
+                </div>
+                <div>
+                    <h3>Atributos importantes</h3>
+                    <ul>
+                        <li><code>required</code>: obriga o preenchimento.</li>
+                        <li><code>placeholder</code>: texto de dica dentro do campo.</li>
+                        <li><code>maxlength</code> / <code>minlength</code>: limite de caracteres (texto).</li>
+                        <li><code>min</code> / <code>max</code>: valor mínimo e máximo (número e data).</li>
+                        <li><code>name</code>: o "nome" com que o dado chega no servidor. <strong>Sem ele o campo não é enviado!</strong></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Formulário <span>de verdade</span></h2>
+            <p>Este formulário abaixo é <strong>real</strong>. Tente enviar vazio e veja a validação do navegador agir sozinha (graças ao <code>required</code>):</p>
+
+            <div class="interactive-container">
+                <form class="demo-form" onsubmit="event.preventDefault(); document.getElementById('form-ok').innerText='✅ Formulário válido! (envio simulado)';">
+                    <label>Nome</label>
+                    <input type="text" name="nome" placeholder="Digite seu nome" required maxlength="30">
+
+                    <label>Senha</label>
+                    <input type="password" name="senha" placeholder="Mínimo 6 caracteres" required minlength="6">
+
+                    <label>Data de nascimento</label>
+                    <input type="date" name="nascimento" required>
+
+                    <label>Idade</label>
+                    <input type="number" name="idade" min="0" max="120" placeholder="0 a 120">
+
+                    <button type="submit" class="interactive-btn" style="margin-top: 20px;">Enviar</button>
+                    <span id="form-ok" style="color: var(--text-highlight); margin-left: 15px; font-weight: 700;"></span>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">⚠️ Cuidado: <span>o navegador manda</span></h2>
+            <div class="obs-box">
+                <p style="margin-bottom: 12px;"><strong style="color: var(--text-highlight); font-size: 24px;"><i class="fa-solid fa-triangle-exclamation"></i> Formulários dependem do navegador</strong></p>
+                <p>Cada tipo de <code>input</code> é <strong>renderizado pelo navegador</strong>, e não pelo seu código. Isso significa que o mesmo campo pode aparecer diferente (ou nem funcionar direito) dependendo de onde o usuário abre a página.</p>
+                <p>O caso mais famoso é o <span class="highlight">Safari de Desktop (macOS)</span>, que historicamente teve problemas para exibir campos como <code>type="date"</code> — muitas vezes mostrando um campo de texto comum em vez do seletor de calendário.</p>
+                <p style="margin-bottom: 0;">Lição prática: <strong>sempre teste seu formulário em mais de um navegador</strong> (Chrome, Firefox, Safari, Edge) antes de considerá-lo pronto.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide slide-alt">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 1: Seu primeiro formulário</strong></p>
+                <p>Crie um <code>&lt;form&gt;</code> com um campo de texto para o nome (com <code>placeholder</code>) e um botão de envio. Não precisa de <code>action</code> ainda.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 2: Campos obrigatórios</strong></p>
+                <p>Adicione ao formulário anterior um campo de <code>password</code> e um campo de <code>date</code>. Torne os dois <code>required</code> e teste enviar o formulário vazio para ver a validação do navegador aparecer.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="slide">
+        <div class="content-area">
+            <h2 class="slide-title">Mão na <span>Massa 2</span></h2>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 3: Limites e método</strong></p>
+                <p>Crie um formulário de cadastro com <code>method="post"</code> contendo: nome (<code>maxlength="20"</code>), senha (<code>minlength="8"</code>) e idade (<code>type="number"</code> com <code>min="18"</code> e <code>max="99"</code>). Tente digitar valores fora dos limites e observe.</p>
+            </div>
+
+            <div class="exercise-box">
+                <p><strong>Exercício 4: GET na prática</strong></p>
+                <p>Monte um formulário de busca com <code>method="get"</code> e um único campo <code>&lt;input type="text" name="q"&gt;</code>. Envie a busca e observe como o valor digitado aparece na <strong>URL</strong> depois do <code>?</code> (ex: <code>?q=notebook</code>). Explique, em um comentário, por que isso <em>não</em> seria adequado para um campo de senha.</p>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        function simular(metodo) {
+            const valor = document.getElementById('sim-nome').value.trim();
+            const res = document.getElementById('sim-result');
+            if (valor === '') {
+                res.innerHTML = '⚠️ Digite uma cidade primeiro.';
+                return;
+            }
+            const encoded = encodeURIComponent(valor);
+            if (metodo === 'get') {
+                res.innerHTML = 'Com <code>GET</code>, os dados vão na URL:<br><code style="color:#deff9a">/busca?cidade=' + encoded + '</code><br><span style="color:#ff9a9a">Qualquer um consegue ver o valor na barra de endereços.</span>';
+            } else {
+                res.innerHTML = 'Com <code>POST</code>, a URL fica limpa:<br><code style="color:#deff9a">/busca</code><br><span style="color:#9affb0">O valor "' + valor + '" viaja escondido no corpo da requisição.</span>';
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const slides = document.querySelectorAll('.slide');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) entry.target.classList.add('visible');
+                });
+            }, { threshold: 0.05 });
+            slides.forEach(slide => observer.observe(slide));
+        });
+    </script>
+</body>
+</html>
